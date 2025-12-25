@@ -334,36 +334,60 @@
             `;
             
             try {
-                // Get player rank (count existing scores)
-                const scoresSnapshot = await db.collection('scores').doc(quizId)
-                    .collection('attempts').get();
+                // FIRST: Get all existing scores for this quiz to calculate rank
+                const scoresSnapshot = await db.collection('scores')
+                    .where('quizId', '==', quizId)
+                    .get();
+                
+                // Calculate rank (total players + 1)
                 const totalPlayers = scoresSnapshot.size + 1;
                 const playerRank = totalPlayers;
                 
-                // Save score to database with player ID and quiz ID
+                // SECOND: Save score to main scores collection
                 const scoreData = {
                     name: userAnswers.playerName,
                     playerId: userAnswers.playerId,
-                    quizId: quizId, // Store quiz ID with score
+                    quizId: quizId, // CRITICAL: Store quizId for querying
                     score: score,
                     rank: playerRank,
                     submittedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
-                await db.collection('scores').doc(quizId).collection('attempts').add(scoreData);
+                // Save to main scores collection
+                await db.collection('scores').add(scoreData);
                 
-                // Mark as attempted
+                // THIRD: Mark as attempted
                 markQuizAttempted(quizId);
                 
-                // Save player info to local storage with quiz ID
+                // FOURTH: Save player info to local storage
                 savePlayerInfo(quizId, userAnswers.playerName, userAnswers.playerId);
                 
-                // Show results
+                // FIFTH: Show results
                 showResults(score, playerRank);
                 
             } catch (error) {
                 console.error('Error saving score:', error);
-                showResults(score, 1); // Show results even if save fails
+                
+                // Try alternative save method
+                try {
+                    // Fallback: Save with basic data
+                    const scoreData = {
+                        name: userAnswers.playerName,
+                        playerId: userAnswers.playerId,
+                        quizId: quizId,
+                        score: score,
+                        submittedAt: new Date()
+                    };
+                    
+                    await db.collection('scores').add(scoreData);
+                    markQuizAttempted(quizId);
+                    savePlayerInfo(quizId, userAnswers.playerName, userAnswers.playerId);
+                    showResults(score, 1);
+                    
+                } catch (fallbackError) {
+                    console.error('Fallback also failed:', fallbackError);
+                    showResults(score, 1); // Show results even if save fails
+                }
             }
         }
 
@@ -439,6 +463,9 @@
                     <div style="display: flex; gap: 6px; margin-bottom: 12px;">
                         <a href="index.html" class="btn btn-sm" style="flex: 1;">
                             <i class='bx bx-plus'></i> Create My Quiz
+                        </a>
+                        <a href="scoreboard.html?quiz=${quizId}" class="btn btn-sm btn-outline" style="flex: 1;">
+                            <i class='bx bx-trophy'></i> View Scoreboard
                         </a>
                     </div>
                     
