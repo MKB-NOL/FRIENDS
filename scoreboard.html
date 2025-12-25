@@ -99,7 +99,7 @@
         // Initialize Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyALNlMLF-Fxu87Ge5yfhp2m1R-vU58XcLo",
-            authDomain: "besides-sm.firebasestorage.app",
+            authDomain: "besides-sm.firebaseapp.com",
             projectId: "besides-sm",
             storageBucket: "besides-sm.firebasestorage.app",
             messagingSenderId: "897908486036",
@@ -179,40 +179,67 @@
                     quizOwner = data.ownerName;
                     document.getElementById('scoreboard-title').textContent = `${data.ownerName}'s Scoreboard`;
                     
-                    // Load statistics
-                    const scoresSnapshot = await db.collection('scores').doc(quizId)
-                        .collection('attempts').get();
-                    
-                    let totalScore = 0;
-                    scoresSnapshot.forEach(doc => {
-                        totalScore += doc.data().score || 0;
-                    });
-                    
-                    const totalPlayers = scoresSnapshot.size;
-                    const avgScore = totalPlayers > 0 ? (totalScore / totalPlayers).toFixed(1) : 0;
-                    
-                    const statsHtml = `
-                        <h3 style="margin-bottom: 12px; font-size: 16px;">📊 Quiz Statistics</h3>
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-                            <div style="text-align: center; padding: 12px; background: #f9f9f9; border-radius: 8px;">
-                                <div style="font-size: 24px; font-weight: bold; color: var(--primary-color);">
-                                    ${totalPlayers}
-                                </div>
-                                <div style="color: #666; font-size: 11px; margin-top: 3px;">Total Players</div>
-                            </div>
-                            <div style="text-align: center; padding: 12px; background: #f9f9f9; border-radius: 8px;">
-                                <div style="font-size: 24px; font-weight: bold; color: var(--primary-color);">
-                                    ${avgScore}/10
-                                </div>
-                                <div style="color: #666; font-size: 11px; margin-top: 3px;">Average Score</div>
-                            </div>
+                    // Load statistics from scores collection
+                    await loadStatistics();
+                } else {
+                    showNotification('Quiz not found!');
+                    document.getElementById('stats-container').innerHTML = `
+                        <div style="text-align: center; padding: 16px; color: #666; font-size: 12px;">
+                            Quiz not found
                         </div>
                     `;
-                    
-                    document.getElementById('stats-container').innerHTML = statsHtml;
                 }
             } catch (error) {
                 console.error('Error loading quiz info:', error);
+                document.getElementById('stats-container').innerHTML = `
+                    <div style="text-align: center; padding: 16px; color: #666; font-size: 12px;">
+                        Unable to load quiz info
+                    </div>
+                `;
+            }
+        }
+
+        async function loadStatistics() {
+            try {
+                // Query scores for this specific quiz by quizId field
+                const scoresSnapshot = await db.collection('scores')
+                    .where('quizId', '==', quizId)
+                    .get();
+                
+                let totalScore = 0;
+                const scores = [];
+                
+                scoresSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    scores.push(data);
+                    totalScore += data.score || 0;
+                });
+                
+                const totalPlayers = scores.length;
+                const avgScore = totalPlayers > 0 ? (totalScore / totalPlayers).toFixed(1) : 0;
+                
+                const statsHtml = `
+                    <h3 style="margin-bottom: 12px; font-size: 16px;">📊 Quiz Statistics</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                        <div style="text-align: center; padding: 12px; background: #f9f9f9; border-radius: 8px;">
+                            <div style="font-size: 24px; font-weight: bold; color: var(--primary-color);">
+                                ${totalPlayers}
+                            </div>
+                            <div style="color: #666; font-size: 11px; margin-top: 3px;">Total Players</div>
+                        </div>
+                        <div style="text-align: center; padding: 12px; background: #f9f9f9; border-radius: 8px;">
+                            <div style="font-size: 24px; font-weight: bold; color: var(--primary-color);">
+                                ${avgScore}/10
+                            </div>
+                            <div style="color: #666; font-size: 11px; margin-top: 3px;">Average Score</div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('stats-container').innerHTML = statsHtml;
+                
+            } catch (error) {
+                console.error('Error loading statistics:', error);
                 document.getElementById('stats-container').innerHTML = `
                     <div style="text-align: center; padding: 16px; color: #666; font-size: 12px;">
                         Unable to load statistics
@@ -238,9 +265,9 @@
             refreshBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Loading...';
             
             try {
-                // Get scores with quiz ID included (already stored with each score)
-                const scoresSnapshot = await db.collection('scores').doc(quizId)
-                    .collection('attempts')
+                // Query scores for this specific quiz by quizId field, ordered by score
+                const scoresSnapshot = await db.collection('scores')
+                    .where('quizId', '==', quizId)
                     .orderBy('score', 'desc')
                     .orderBy('submittedAt', 'asc')
                     .get();
@@ -251,7 +278,6 @@
                     scores.push({
                         ...data,
                         id: doc.id,
-                        quizId: data.quizId || quizId, // Use stored quizId or fallback
                         submittedAt: data.submittedAt?.toDate() || new Date()
                     });
                 });
@@ -262,18 +288,52 @@
                 
             } catch (error) {
                 console.error('Error loading scores:', error);
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 24px 16px;">
-                        <div style="font-size: 40px; margin-bottom: 12px; color: var(--primary-color);">😕</div>
-                        <h3 style="margin-bottom: 10px; font-size: 16px;">Error Loading Scores</h3>
-                        <p style="color: #666; margin-bottom: 20px; font-size: 12px;">Please check your connection</p>
-                        <button onclick="loadScores()" class="btn btn-sm">
-                            <i class='bx bx-refresh'></i> Try Again
-                        </button>
-                    </div>
-                `;
-                refreshBtn.disabled = false;
-                refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh';
+                
+                // Try alternative query (in case quizId field is missing in some documents)
+                try {
+                    // Fallback: Try to get all scores and filter client-side
+                    console.log('Trying alternative query...');
+                    const allScoresSnapshot = await db.collection('scores').get();
+                    const allScores = [];
+                    
+                    allScoresSnapshot.forEach(doc => {
+                        const data = doc.data();
+                        if (data.quizId === quizId) {
+                            allScores.push({
+                                ...data,
+                                id: doc.id,
+                                submittedAt: data.submittedAt?.toDate() || new Date()
+                            });
+                        }
+                    });
+                    
+                    // Sort by score
+                    allScores.sort((a, b) => {
+                        if (b.score !== a.score) {
+                            return b.score - a.score;
+                        }
+                        return a.submittedAt - b.submittedAt;
+                    });
+                    
+                    displayScores(allScores);
+                    refreshBtn.disabled = false;
+                    refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh';
+                    
+                } catch (fallbackError) {
+                    console.error('Fallback also failed:', fallbackError);
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 24px 16px;">
+                            <div style="font-size: 40px; margin-bottom: 12px; color: var(--primary-color);">😕</div>
+                            <h3 style="margin-bottom: 10px; font-size: 16px;">Error Loading Scores</h3>
+                            <p style="color: #666; margin-bottom: 20px; font-size: 12px;">${error.message}</p>
+                            <button onclick="loadScores()" class="btn btn-sm">
+                                <i class='bx bx-refresh'></i> Try Again
+                            </button>
+                        </div>
+                    `;
+                    refreshBtn.disabled = false;
+                    refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh';
+                }
             }
         }
 
