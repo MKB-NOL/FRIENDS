@@ -99,4 +99,74 @@
         function copyLink() {
             const linkInput = document.getElementById('quiz-link');
             linkInput.select();
-            linkInput.set
+            linkInput.setSelectionRange(0, 99999);
+            
+            try {
+                navigator.clipboard.writeText(linkInput.value).then(() => {
+                    showNotification('Link copied to clipboard!');
+                    
+                    // Visual feedback
+                    const btn = document.getElementById('copy-btn');
+                    btn.innerHTML = '<i class="bx bx-check"></i>';
+                    btn.style.background = '#25D366';
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="bx bx-copy"></i>';
+                        btn.style.background = 'red';
+                    }, 2000);
+                });
+            } catch (err) {
+                document.execCommand('copy');
+                showNotification('Link copied!');
+            }
+        }
+
+        function shareWhatsApp() {
+            const quizLink = document.getElementById('quiz-link').value;
+            const message = `Take my FRIENDS quiz and see how well you know me! 😄 ${quizLink}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function shareFacebook() {
+            const quizLink = document.getElementById('quiz-link').value;
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(quizLink)}`, '_blank');
+        }
+
+        function shareTwitter() {
+            const quizLink = document.getElementById('quiz-link').value;
+            const message = `Can you beat my score on this FRIENDS quiz? 🏆 ${quizLink}`;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function copyMessage() {
+            const quizLink = document.getElementById('quiz-link').value;
+            const message = `I made a FRIENDS quiz! 😎 Try it and see how well you know me: ${quizLink} Let's see if you're really my best friend! 😄`;
+            
+            try {
+                navigator.clipboard.writeText(message).then(() => {
+                    showNotification('Message copied! Ready to share anywhere');
+                });
+            } catch (err) {
+                const textArea = document.createElement('textarea');
+                textArea.value = message;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('Message copied!');
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
