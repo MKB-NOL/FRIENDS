@@ -3,47 +3,415 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Take the Quiz - FRIENDS</title>
+    <title>Take the Quiz | FRIENDS</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://richinfo.co/richpartners/in-page/js/richads-ob.js?pubid=997197&siteid=381604" async></script>
+    <!-- Firebase v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
-    <div id="christmas-effects"></div>
-
     <div class="container">
-        <!-- Header -->
-        <header style="text-align: center; margin-bottom: 20px;">
-            <a href="index.html" style="text-decoration: none; color: inherit;">
-                <h1>❄️ FRIENDS ❄️</h1>
+        <header>
+            <a href="index.html" style="text-decoration: none;">
+                <div class="logo" style="font-size: 32px;">F•R•I•E•N•D•S</div>
             </a>
-            <p class="tagline" id="quiz-title">Loading quiz...</p>
+            <p id="quiz-title" class="tagline">Loading quiz...</p>
         </header>
 
-        <!-- Quiz Container -->
+        <div class="line"></div>
+
         <div id="quiz-container">
-            <!-- Will be loaded dynamically -->
+            <!-- Content loaded by JavaScript -->
         </div>
 
-        <!-- Ad Container -->
-        <div class="ad-container">
-            <p style="color: #666; font-style: italic;">Ad space</p>
-        </div>
-
-        <!-- Footer -->
         <footer>
             <div class="footer-links">
+                <a href="index.html"><i class='bx bx-home'></i> Home</a>
                 <a href="privacy.html">Privacy</a>
                 <a href="terms.html">Terms</a>
-                <a href="contact.html">Contact</a>
             </div>
         </footer>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
-    <script src="js/firebase-config.js"></script>
-    <script src="js/quiz.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyALNlMLF-Fxu87Ge5yfhp2m1R-vU58XcLo",
+            authDomain: "besides-sm.firebaseapp.com",
+            projectId: "besides-sm",
+            storageBucket: "besides-sm.firebasestorage.app",
+            messagingSenderId: "897908486036",
+            appId: "1:897908486036:web:e39140f75bec1b4d4de981",
+            measurementId: "G-BB0NMVRFLY"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let quizData = null;
+        let currentQuestion = 0;
+        let userAnswers = {};
+        let quizId = null;
+        const ATTEMPT_KEY = 'friends_quiz_attempts';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get quiz ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            quizId = urlParams.get('quiz');
+            
+            if (!quizId) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Check if already attempted
+            if (hasAttemptedQuiz(quizId)) {
+                showAlreadyAttempted();
+                return;
+            }
+            
+            // Load quiz data
+            loadQuizData();
+        });
+
+        function hasAttemptedQuiz(quizId) {
+            const attempts = JSON.parse(localStorage.getItem(ATTEMPT_KEY) || '{}');
+            return attempts[quizId] === true;
+        }
+
+        function markQuizAttempted(quizId) {
+            const attempts = JSON.parse(localStorage.getItem(ATTEMPT_KEY) || '{}');
+            attempts[quizId] = true;
+            localStorage.setItem(ATTEMPT_KEY, JSON.stringify(attempts));
+        }
+
+        function showAlreadyAttempted() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = `
+                <div class="card" style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 48px; margin-bottom: 20px; color: red;">⏰</div>
+                    <h2 style="margin-bottom: 15px;">One Attempt Only!</h2>
+                    <p style="color: #666; margin-bottom: 30px;">
+                        You've already taken this quiz! Each friend can only attempt once to keep it fair. 😊
+                    </p>
+                    <a href="index.html" class="btn">
+                        <i class='bx bx-home'></i> Create Your Own Quiz
+                    </a>
+                </div>
+            `;
+        }
+
+        async function loadQuizData() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading quiz...</p>
+                </div>
+            `;
+            
+            try {
+                const quizDoc = await db.collection('quizzes').doc(quizId).get();
+                
+                if (!quizDoc.exists) {
+                    throw new Error('Quiz not found');
+                }
+                
+                quizData = quizDoc.data();
+                document.getElementById('quiz-title').textContent = `How well do you know ${quizData.ownerName}?`;
+                
+                showNameInput();
+                
+            } catch (error) {
+                console.error('Error loading quiz:', error);
+                container.innerHTML = `
+                    <div class="card" style="text-align: center; padding: 40px 20px;">
+                        <div style="font-size: 48px; margin-bottom: 20px; color: red;">😕</div>
+                        <h2 style="margin-bottom: 15px;">Quiz Not Found</h2>
+                        <p style="color: #666; margin-bottom: 30px;">
+                            This quiz link is invalid or has expired.
+                        </p>
+                        <a href="index.html" class="btn">
+                            <i class='bx bx-home'></i> Create Your Own Quiz
+                        </a>
+                    </div>
+                `;
+            }
+        }
+
+        function showNameInput() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = `
+                <div class="card">
+                    <h2 style="margin-bottom: 15px; font-size: 22px;"><i class='bx bx-user' style="color: red;"></i> What's your nickname?</h2>
+                    <p style="color: #666; margin-bottom: 25px;">Enter your nickname to appear on the scoreboard</p>
+                    
+                    <div class="input-group">
+                        <input type="text" id="player-name" class="input-field" placeholder="Your nickname" maxlength="20">
+                    </div>
+                    
+                    <button id="start-quiz" class="btn" disabled>
+                        <i class='bx bx-play'></i> Start Quiz
+                    </button>
+                </div>
+            `;
+            
+            const nameInput = document.getElementById('player-name');
+            const startBtn = document.getElementById('start-quiz');
+            
+            nameInput.addEventListener('input', function() {
+                startBtn.disabled = this.value.trim().length < 2;
+            });
+            
+            startBtn.addEventListener('click', startQuiz);
+        }
+
+        function startQuiz() {
+            const playerName = document.getElementById('player-name').value.trim();
+            if (playerName.length < 2) return;
+            
+            userAnswers.playerName = playerName;
+            showQuestion(0);
+        }
+
+        function showQuestion(index) {
+            currentQuestion = index;
+            const question = quizData.questions[index];
+            
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = `
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>Question ${index + 1} of 10</h3>
+                        <span style="background: #f0f0f0; padding: 5px 15px; border-radius: 20px; font-weight: 600; color: red;">
+                            ${Math.round(((index + 1) / 10) * 100)}%
+                        </span>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div style="width: ${((index + 1) / 10) * 100}%;" class="progress-bar"></div>
+                    </div>
+                    
+                    <div class="quiz-question">${question.text}</div>
+                    
+                    <div class="quiz-options">
+                        ${question.options.map((option, i) => `
+                            <div class="quiz-option" data-index="${i}">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="nav-buttons">
+                        ${index > 0 ? `
+                            <button id="prev-btn" class="btn nav-btn" style="background: #666;">
+                                <i class='bx bx-chevron-left'></i> Previous
+                            </button>
+                        ` : '<div></div>'}
+                        
+                        ${index < 9 ? `
+                            <button id="next-btn" class="btn nav-btn" disabled>
+                                Next <i class='bx bx-chevron-right'></i>
+                            </button>
+                        ` : `
+                            <button id="submit-btn" class="btn nav-btn" disabled style="background: #25D366;">
+                                <i class='bx bx-check'></i> Submit Quiz
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+            
+            // Set up answer selection
+            const options = container.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    // Deselect all
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    // Select this one
+                    option.classList.add('selected');
+                    
+                    // Enable next/submit button
+                    const nextBtn = document.getElementById('next-btn');
+                    const submitBtn = document.getElementById('submit-btn');
+                    if (nextBtn) nextBtn.disabled = false;
+                    if (submitBtn) submitBtn.disabled = false;
+                    
+                    // Store answer
+                    userAnswers[index] = option.dataset.index;
+                });
+            });
+            
+            // Navigation buttons
+            if (index > 0) {
+                document.getElementById('prev-btn').addEventListener('click', () => {
+                    showQuestion(index - 1);
+                });
+            }
+            
+            if (index < 9) {
+                document.getElementById('next-btn').addEventListener('click', () => {
+                    showQuestion(index + 1);
+                });
+            } else {
+                document.getElementById('submit-btn').addEventListener('click', submitQuiz);
+            }
+            
+            // Restore previous selection if any
+            if (userAnswers[index] !== undefined) {
+                options[userAnswers[index]].classList.add('selected');
+                const nextBtn = document.getElementById('next-btn');
+                const submitBtn = document.getElementById('submit-btn');
+                if (nextBtn) nextBtn.disabled = false;
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        }
+
+        async function submitQuiz() {
+            // Calculate score
+            let score = 0;
+            quizData.questions.forEach((question, index) => {
+                if (userAnswers[index] !== undefined) {
+                    const selectedOption = question.options[userAnswers[index]];
+                    if (selectedOption === question.correctAnswer) {
+                        score++;
+                    }
+                }
+            });
+            
+            // Show loading
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Saving your score...</p>
+                </div>
+            `;
+            
+            try {
+                // Save score to database
+                const scoreData = {
+                    name: userAnswers.playerName,
+                    score: score,
+                    submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                await db.collection('scores').doc(quizId).collection('attempts').add(scoreData);
+                
+                // Mark as attempted
+                markQuizAttempted(quizId);
+                
+                // Show results
+                showResults(score);
+                
+            } catch (error) {
+                console.error('Error saving score:', error);
+                showResults(score); // Still show results even if save fails
+            }
+        }
+
+        function showResults(score) {
+            const container = document.getElementById('quiz-container');
+            
+            // Determine result message
+            let emoji, message;
+            if (score === 10) {
+                emoji = '🏆';
+                message = 'BEST FRIEND ALERT!';
+            } else if (score >= 7) {
+                emoji = '😄';
+                message = 'Close Friend!';
+            } else if (score >= 5) {
+                emoji = '👍';
+                message = 'Good Friend!';
+            } else {
+                emoji = '😅';
+                message = 'Still Learning!';
+            }
+            
+            container.innerHTML = `
+                <div class="card" style="text-align: center;">
+                    <div class="result-emoji">${emoji}</div>
+                    <h2 style="margin-bottom: 10px;">${message}</h2>
+                    <p style="color: #666; margin-bottom: 30px;">
+                        You scored ${score} out of 10 questions about ${quizData.ownerName}!
+                    </p>
+                    
+                    <div class="score-circle">
+                        ${score}/10
+                    </div>
+                    
+                    <div style="margin: 30px 0; padding: 20px; background: #f9f9f9; border-radius: 12px;">
+                        <h4 style="margin-bottom: 10px;"><i class='bx bx-star' style="color: red;"></i> Your Result</h4>
+                        <p style="color: #666;">
+                            ${getResultMessage(score)}
+                        </p>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <a href="scoreboard.html?quiz=${quizId}" class="btn" style="flex: 1;">
+                            <i class='bx bx-trophy'></i> View Scoreboard
+                        </a>
+                        <a href="index.html" class="btn" style="flex: 1; background: #666;">
+                            <i class='bx bx-plus'></i> Create My Quiz
+                        </a>
+                    </div>
+                    
+                    <button onclick="shareResult()" class="btn" style="background: #4267B2;">
+                        <i class='bx bx-share-alt'></i> Share My Score
+                    </button>
+                </div>
+            `;
+        }
+
+        function getResultMessage(score) {
+            const messages = [
+                "Perfect score! You know them better than they know themselves! 🎯",
+                "Almost perfect! You're clearly one of their closest friends! 👯",
+                "Excellent! You pay attention to the details that matter! ✨",
+                "Great job! You know them pretty well! 😊",
+                "Good score! You know the important things! 👍",
+                "Not bad! You're getting to know them better! 🤔",
+                "Room for improvement! Keep learning about them! 📚",
+                "Getting there! Maybe have more heart-to-heart talks! 💬",
+                "Early days! Every friendship starts somewhere! 🌱",
+                "Just starting! This is the beginning of your journey! 🚀",
+                "Surprise! Sometimes opposites attract the most! 🤷‍♂️"
+            ];
+            
+            return messages[10 - score] || "Thanks for playing!";
+        }
+
+        function shareResult() {
+            const score = userAnswers.score || 0;
+            const message = `I scored ${score}/10 on ${quizData.ownerName}'s FRIENDS quiz! 🏆 Can you beat my score? ${window.location.origin}/quiz.html?quiz=${quizId}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'FRIENDS Quiz Result',
+                    text: message
+                });
+            } else {
+                navigator.clipboard.writeText(message).then(() => {
+                    showNotification('Result copied to clipboard! Share it with friends!');
+                });
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
