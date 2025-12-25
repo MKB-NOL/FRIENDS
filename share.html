@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Your Quiz - FRIENDS</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="christmas-effects"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header style="text-align: center; margin-bottom: 20px;">
+            <a href="index.html" style="text-decoration: none; color: inherit;">
+                <h1>🎁 FRIENDS 🎁</h1>
+            </a>
+            <p class="tagline">Share your quiz with friends!</p>
+        </header>
+
+        <!-- Success Card -->
+        <div class="card result-card">
+            <div class="result-emoji">🎉</div>
+            <h2 style="margin-bottom: 10px;">Quiz Created Successfully!</h2>
+            <p style="color: #666; margin-bottom: 30px;">Share your unique link with friends and see who knows you best!</p>
+            
+            <!-- Quiz Link -->
+            <div class="card" style="background: var(--light); margin-bottom: 25px;">
+                <h4 style="margin-bottom: 10px;">Your Quiz Link:</h4>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="text" id="quiz-link" class="form-control" readonly style="background: white;">
+                    <button id="copy-btn" class="btn btn-primary" style="width: auto; padding: 15px 20px;">
+                        <i class='bx bx-copy'></i>
+                    </button>
+                </div>
+                <small style="color: #666;">Copy this link to share with friends</small>
+            </div>
+            
+            <!-- Share Buttons -->
+            <h4 style="margin-bottom: 15px;">Share Instantly:</h4>
+            <div class="share-buttons">
+                <div class="share-btn whatsapp" onclick="shareOnWhatsApp()">
+                    <i class='bx bxl-whatsapp'></i>
+                </div>
+                <div class="share-btn facebook" onclick="shareOnFacebook()">
+                    <i class='bx bxl-facebook'></i>
+                </div>
+                <div class="share-btn twitter" onclick="shareOnTwitter()">
+                    <i class='bx bxl-twitter'></i>
+                </div>
+            </div>
+            
+            <!-- Share Message -->
+            <div class="card" style="margin: 25px 0; background: #FFF9E6;">
+                <h4 style="margin-bottom: 10px;">💡 Suggested Message:</h4>
+                <p id="share-message" style="margin-bottom: 15px; font-style: italic;">
+                    "I made a FRIENDS quiz 🎄 Try it and see how well you know me! Let's see if you're really my best friend! 😄"
+                </p>
+                <button id="copy-message" class="btn btn-outline" style="width: 100%;">
+                    <i class='bx bx-copy'></i> Copy Message
+                </button>
+            </div>
+            
+            <!-- Next Steps -->
+            <div style="text-align: center;">
+                <a href="#" id="scoreboard-btn" class="btn btn-secondary" style="margin-bottom: 15px;">
+                    <i class='bx bx-trophy'></i> View My Scoreboard
+                </a>
+                <a href="index.html" class="btn btn-outline">
+                    <i class='bx bx-home'></i> Back to Home
+                </a>
+            </div>
+        </div>
+
+        <!-- Ad Container -->
+        <div class="ad-container">
+            <p style="color: #666; font-style: italic;">Ad space - Clean ads only</p>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-links">
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/share.js"></script>
+</body>
+</html>
