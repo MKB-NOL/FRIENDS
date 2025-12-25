@@ -1,584 +1,123 @@
-/* Reset & Base */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-    -webkit-tap-highlight-color: transparent;
-}
-
-:root {
-    --primary-color: #FF4444;
-    --bg-color: #f8f9fa;
-    --text-color: #333;
-    --card-bg: #ffffff;
-    --line-color: #e0e0e0;
-    --success-color: #28a745;
-}
-
-body {
-    background: var(--bg-color);
-    color: var(--text-color);
-    min-height: 100vh;
-    max-width: 100%;
-    margin: 0 auto;
-    overflow-x: hidden;
-}
-
-/* Theme colors */
-body.theme-red {
-    --primary-color: #FF4444;
-    --bg-color: #fef0f0;
-}
-
-body.theme-blue {
-    --primary-color: #4A90E2;
-    --bg-color: #f0f8ff;
-}
-
-body.theme-green {
-    --primary-color: #2ECC71;
-    --bg-color: #f1f8e9;
-}
-
-body.theme-orange {
-    --primary-color: #FF9800;
-    --bg-color: #fff3e0;
-}
-
-body.theme-violet {
-    --primary-color: #9C27B0;
-    --bg-color: #f3e5f5;
-}
-
-/* Container */
-.container {
-    padding: 12px;
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-/* Header */
-header {
-    text-align: center;
-    margin-bottom: 20px;
-    padding-top: 10px;
-}
-
-.logo {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 6px;
-    letter-spacing: 1px;
-}
-
-.logo-dot {
-    font-size: 30px;
-}
-
-.tagline {
-    font-size: 13px;
-    color: #666;
-    opacity: 0.9;
-}
-
-/* Lines */
-.line {
-    height: 1px;
-    background: var(--line-color);
-    margin: 20px 0;
-    border: none;
-}
-
-/* Cards */
-.card {
-    background: var(--card-bg);
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-/* Buttons - SMALL */
-.btn {
-    display: block;
-    width: 100%;
-    padding: 12px 14px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-    text-decoration: none;
-    margin: 10px 0;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn:active {
-    transform: scale(0.98);
-}
-
-.btn:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-.btn i {
-    margin-right: 5px;
-    font-size: 16px;
-}
-
-.btn-sm {
-    padding: 10px 12px;
-    font-size: 13px;
-}
-
-.btn-outline {
-    background: transparent;
-    border: 2px solid var(--primary-color);
-    color: var(--primary-color);
-}
-
-.btn-success {
-    background: var(--success-color);
-}
-
-/* Inputs */
-.input-group {
-    margin-bottom: 16px;
-}
-
-.input-label {
-    display: block;
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 6px;
-    color: var(--text-color);
-}
-
-.input-field {
-    width: 100%;
-    padding: 12px 14px;
-    border: 2px solid #eee;
-    border-radius: 8px;
-    font-size: 14px;
-    background: white;
-    transition: border 0.2s ease;
-}
-
-.input-field:focus {
-    outline: none;
-    border-color: var(--primary-color);
-}
-
-/* Question Cards */
-.question-card {
-    background: white;
-    border-radius: 8px;
-    padding: 14px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 2px solid transparent;
-    position: relative;
-}
-
-.question-card:active {
-    transform: scale(0.98);
-}
-
-.question-card.selected {
-    border-color: var(--primary-color);
-    background: rgba(255, 68, 68, 0.05);
-}
-
-.question-text {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-color);
-    margin-bottom: 8px;
-}
-
-.answer-preview {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 6px;
-}
-
-.answer-preview span {
-    background: #f5f5f5;
-    padding: 5px 9px;
-    border-radius: 12px;
-    font-size: 11px;
-    color: #666;
-    border: 1px solid #eee;
-}
-
-.question-card.selected .answer-preview span:first-child {
-    background: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-
-/* Answer Selection */
-.answer-options {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 12px 0;
-}
-
-.answer-option {
-    padding: 12px 14px;
-    background: white;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 2px solid #eee;
-}
-
-.answer-option:active {
-    transform: scale(0.98);
-}
-
-.answer-option.selected {
-    background: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-
-/* Progress */
-.progress-container {
-    background: #f0f0f0;
-    height: 5px;
-    border-radius: 3px;
-    margin: 12px 0;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    background: var(--primary-color);
-    width: 0%;
-    transition: width 0.3s ease;
-}
-
-.selection-counter {
-    text-align: center;
-    font-size: 13px;
-    color: var(--primary-color);
-    font-weight: 600;
-    margin: 10px 0;
-}
-
-/* Scoreboard */
-.scoreboard {
-    margin-top: 12px;
-}
-
-.score-item {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    margin-bottom: 6px;
-    background: white;
-    border-radius: 6px;
-    animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.rank {
-    width: 28px;
-    height: 28px;
-    background: var(--primary-color);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 12px;
-    margin-right: 10px;
-    flex-shrink: 0;
-}
-
-.rank-1 { background: #FFD700; color: #333; }
-.rank-2 { background: #C0C0C0; color: #333; }
-.rank-3 { background: #CD7F32; color: white; }
-
-.player-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.player-name {
-    font-weight: 600;
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.player-time {
-    color: #888;
-    font-size: 10px;
-    margin-top: 1px;
-}
-
-.player-score {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-left: 6px;
-    flex-shrink: 0;
-}
-
-/* Results */
-.result-card {
-    text-align: center;
-    padding: 24px 16px;
-}
-
-.result-emoji {
-    font-size: 40px;
-    margin: 12px 0;
-}
-
-.score-circle {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 12px auto;
-    font-weight: 700;
-    position: relative;
-}
-
-.score-main {
-    font-size: 24px;
-    line-height: 1;
-}
-
-.score-percentage {
-    font-size: 11px;
-    opacity: 0.9;
-    margin-top: 3px;
-}
-
-/* Quiz History */
-.history-container {
-    margin-top: 16px;
-}
-
-.history-item {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    margin-bottom: 6px;
-    background: white;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.history-item:active {
-    transform: scale(0.98);
-}
-
-.history-emoji {
-    font-size: 18px;
-    margin-right: 10px;
-    width: 28px;
-    text-align: center;
-    flex-shrink: 0;
-}
-
-.history-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.history-name {
-    font-weight: 600;
-    font-size: 13px;
-    margin-bottom: 1px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.history-date {
-    color: #888;
-    font-size: 10px;
-}
-
-/* Tabs */
-.tabs {
-    display: flex;
-    background: #f5f5f5;
-    border-radius: 8px;
-    padding: 3px;
-    margin-bottom: 16px;
-}
-
-.tab {
-    flex: 1;
-    padding: 8px;
-    text-align: center;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.tab.active {
-    background: white;
-    color: var(--primary-color);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* Loading */
-.loading {
-    text-align: center;
-    padding: 30px 16px;
-}
-
-.spinner {
-    width: 28px;
-    height: 28px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 12px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Notification */
-.notification {
-    position: fixed;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--primary-color);
-    color: white;
-    padding: 10px 16px;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    z-index: 1000;
-    animation: slideDown 0.3s ease;
-    font-size: 13px;
-    max-width: 90%;
-    text-align: center;
-}
-
-@keyframes slideDown {
-    from { top: -30px; }
-    to { top: 12px; }
-}
-
-/* Footer */
-footer {
-    margin-top: 24px;
-    padding-top: 12px;
-    text-align: center;
-}
-
-.footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-bottom: 10px;
-}
-
-.footer-links a {
-    color: #666;
-    text-decoration: none;
-    font-size: 12px;
-}
-
-.footer-links a:hover {
-    color: var(--primary-color);
-}
-
-.copyright {
-    color: #999;
-    font-size: 11px;
-}
-
-/* Modal */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 16px;
-}
-
-.modal-content {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    max-width: 400px;
-    width: 100%;
-    max-height: 80vh;
-    overflow-y: auto;
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-    .container {
-        padding: 10px;
-    }
-    
-    .logo {
-        font-size: 24px;
-    }
-    
-    .btn {
-        padding: 10px 12px;
-        font-size: 13px;
-    }
-    
-    .card {
-        padding: 14px;
-    }
-    
-    .question-text {
-        font-size: 13px;
-    }
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRIENDS | Who Knows You Best?</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://richinfo.co/richpartners/in-page/js/richads-ob.js?pubid=997197&siteid=381604" async></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👥</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span style="color: #FF4444;">F</span><span class="logo-dot" style="color: #FF9800;">•</span>
+                <span style="color: #2ECC71;">R</span><span class="logo-dot" style="color: #9C27B0;">•</span>
+                <span style="color: #4A90E2;">I</span><span class="logo-dot" style="color: #FF5722;">•</span>
+                <span style="color: #FFC107;">E</span><span class="logo-dot" style="color: #795548;">•</span>
+                <span style="color: #673AB7;">N</span><span class="logo-dot" style="color: #00BCD4;">•</span>
+                <span style="color: #E91E63;">D</span><span class="logo-dot" style="color: #8BC34A;">•</span>
+                <span style="color: #3F51B5;">S</span>
+            </div>
+            <p class="tagline">Discover who really knows you best!</p>
+        </header>
+
+        <div class="line"></div>
+
+        <div class="card">
+            <h2 style="text-align: center; margin-bottom: 16px; font-size: 18px;">Create Your Quiz in 3 Steps</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; align-items: flex-start; margin-bottom: 16px;">
+                    <div style="background: var(--primary-color); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; font-weight: 600; font-size: 12px;">1</div>
+                    <div>
+                        <h3 style="margin-bottom: 3px; font-size: 14px;">Pick Your Nickname</h3>
+                        <p style="color: #666; font-size: 12px;">Choose a cool nickname</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: flex-start; margin-bottom: 16px;">
+                    <div style="background: var(--primary-color); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; font-weight: 600; font-size: 12px;">2</div>
+                    <div>
+                        <h3 style="margin-bottom: 3px; font-size: 14px;">Choose 10 Questions</h3>
+                        <p style="color: #666; font-size: 12px;">Pick from 20 fun questions</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: flex-start; margin-bottom: 16px;">
+                    <div style="background: var(--primary-color); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; font-weight: 600; font-size: 12px;">3</div>
+                    <div>
+                        <h3 style="margin-bottom: 3px; font-size: 14px;">Share & See Scores</h3>
+                        <p style="color: #666; font-size: 12px;">Share link and watch live scoreboard</p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="create.html" class="btn">
+                <i class='bx bx-play-circle'></i> Create My Quiz
+            </a>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="card">
+            <h3 style="text-align: center; margin-bottom: 12px; font-size: 16px;">✨ Why FRIENDS?</h3>
+            <div style="text-align: center;">
+                <div style="display: inline-flex; align-items: center; margin: 6px; color: #666; font-size: 12px;">
+                    <i class='bx bxs-lock-alt' style="color: var(--primary-color); margin-right: 5px;"></i> Private & Safe
+                </div>
+                <div style="display: inline-flex; align-items: center; margin: 6px; color: #666; font-size: 12px;">
+                    <i class='bx bx-party' style="color: var(--primary-color); margin-right: 5px;"></i> Super Fun
+                </div>
+                <div style="display: inline-flex; align-items: center; margin: 6px; color: #666; font-size: 12px;">
+                    <i class='bx bx-share-alt' style="color: var(--primary-color); margin-right: 5px;"></i> Viral Sharing
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-links">
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <p class="copyright">FRIENDS © 2025 | Made with ❤️ for fun by btem Ltd.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Apply random theme
+        function applyRandomTheme() {
+            const themes = ['red', 'blue', 'green', 'orange', 'violet'];
+            const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+            document.body.classList.add('theme-' + randomTheme);
+            
+            // Change theme every 5 minutes
+            setInterval(() => {
+                document.body.className = '';
+                const newTheme = themes[Math.floor(Math.random() * themes.length)];
+                document.body.classList.add('theme-' + newTheme);
+            }, 5 * 60 * 1000);
+        }
+        
+        // Load saved nickname for auto-complete
+        function loadSavedNickname() {
+            const savedNickname = localStorage.getItem('friends_nickname');
+            if (savedNickname) {
+                const nicknameInput = document.getElementById('nickname');
+                if (nicknameInput) {
+                    nicknameInput.value = savedNickname;
+                }
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            applyRandomTheme();
+            loadSavedNickname();
+        });
+    </script>
+</body>
+</html>
