@@ -47,29 +47,17 @@
 
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <h2 style="font-size: 18px;"><i class='bx bx-trophy' style="color: var(--primary-color);"></i> 
-                        <span id="scoreboard-type">Live Ranking</span>
-                    </h2>
+                    <h2 style="font-size: 18px;"><i class='bx bx-trophy' style="color: var(--primary-color);"></i> Live Ranking</h2>
                     <span id="total-players" style="background: #f0f0f0; padding: 3px 10px; border-radius: 12px; font-weight: 600; font-size: 12px;">
                         0 players
                     </span>
                 </div>
                 
-                <!-- Owner sees full ranking -->
-                <div id="full-ranking" style="display: none;">
-                    <div id="scores-container">
-                        <!-- Full scores loaded by JavaScript -->
-                    </div>
+                <div id="scores-container">
+                    <!-- Scores loaded by JavaScript -->
                 </div>
                 
-                <!-- Friends see only their position -->
-                <div id="personal-ranking" style="display: none;">
-                    <div id="personal-score-container">
-                        <!-- Personal score loaded by JavaScript -->
-                    </div>
-                </div>
-                
-                <div id="action-buttons" style="margin-top: 20px;">
+                <div style="margin-top: 20px;">
                     <button id="refresh-btn" class="btn btn-sm" style="margin-bottom: 6px;">
                         <i class='bx bx-refresh'></i> Refresh
                     </button>
@@ -124,8 +112,6 @@
 
         let quizId = null;
         let quizOwner = null;
-        let isOwner = false;
-        let currentPlayerId = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             // Apply theme
@@ -144,12 +130,8 @@
                 loadHistory();
             } else {
                 // Has quiz ID - load scoreboard
-                // First get current player info from localStorage
-                const players = JSON.parse(localStorage.getItem('friends_quiz_players') || '{}');
-                currentPlayerId = players[quizId]?.playerId;
-                
                 loadQuizInfo();
-                checkIfOwner();
+                loadScores();
             }
             
             // Set up tabs
@@ -167,7 +149,7 @@
                         document.getElementById('history-content').style.display = 'none';
                         if (quizId) {
                             loadQuizInfo();
-                            checkIfOwner();
+                            loadScores();
                         }
                     } else {
                         document.getElementById('scoreboard-content').style.display = 'none';
@@ -178,13 +160,7 @@
             });
             
             // Set up buttons
-            document.getElementById('refresh-btn').addEventListener('click', function() {
-                if (isOwner) {
-                    loadFullScores();
-                } else {
-                    loadPersonalScore();
-                }
-            });
+            document.getElementById('refresh-btn').addEventListener('click', loadScores);
             document.getElementById('share-btn').addEventListener('click', shareQuiz);
         });
 
@@ -220,63 +196,6 @@
                         Unable to load quiz info
                     </div>
                 `;
-            }
-        }
-
-        async function checkIfOwner() {
-            try {
-                // Get player info from localStorage
-                const players = JSON.parse(localStorage.getItem('friends_quiz_players') || '{}');
-                const playerInfo = players[quizId];
-                
-                if (playerInfo) {
-                    // Check if this player is the owner by comparing names
-                    const quizDoc = await db.collection('quizzes').doc(quizId).get();
-                    if (quizDoc.exists) {
-                        const quizData = quizDoc.data();
-                        isOwner = (playerInfo.name === quizData.ownerName);
-                        
-                        // Update UI based on ownership
-                        updateScoreboardView();
-                        
-                        if (isOwner) {
-                            document.getElementById('scoreboard-type').textContent = 'Live Ranking';
-                            loadFullScores();
-                        } else {
-                            document.getElementById('scoreboard-type').textContent = 'Your Position';
-                            loadPersonalScore();
-                        }
-                    }
-                } else {
-                    // No player info found - show full ranking
-                    isOwner = false;
-                    updateScoreboardView();
-                    document.getElementById('scoreboard-type').textContent = 'Live Ranking';
-                    loadFullScores();
-                }
-                
-            } catch (error) {
-                console.error('Error checking ownership:', error);
-                // Default to full ranking
-                isOwner = false;
-                updateScoreboardView();
-                document.getElementById('scoreboard-type').textContent = 'Live Ranking';
-                loadFullScores();
-            }
-        }
-
-        function updateScoreboardView() {
-            if (isOwner) {
-                // Owner sees full ranking
-                document.getElementById('full-ranking').style.display = 'block';
-                document.getElementById('personal-ranking').style.display = 'none';
-                document.getElementById('share-btn').style.display = 'block';
-            } else {
-                // Friend sees only personal position
-                document.getElementById('full-ranking').style.display = 'none';
-                document.getElementById('personal-ranking').style.display = 'block';
-                // Hide share button for non-owners
-                document.getElementById('share-btn').style.display = 'none';
             }
         }
 
@@ -329,7 +248,7 @@
             }
         }
 
-        async function loadFullScores() {
+        async function loadScores() {
             const container = document.getElementById('scores-container');
             const refreshBtn = document.getElementById('refresh-btn');
             
@@ -363,127 +282,62 @@
                     });
                 });
                 
-                displayFullScores(scores);
+                displayScores(scores);
                 refreshBtn.disabled = false;
                 refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh';
                 
             } catch (error) {
                 console.error('Error loading scores:', error);
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 24px 16px;">
-                        <div style="font-size: 40px; margin-bottom: 12px; color: var(--primary-color);">😕</div>
-                        <h3 style="margin-bottom: 10px; font-size: 16px;">Error Loading Scores</h3>
-                        <p style="color: #666; margin-bottom: 20px; font-size: 12px;">${error.message}</p>
-                        <button onclick="loadFullScores()" class="btn btn-sm">
-                            <i class='bx bx-refresh'></i> Try Again
-                        </button>
-                    </div>
-                `;
-                refreshBtn.disabled = false;
-                refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh';
-            }
-        }
-
-        async function loadPersonalScore() {
-            const container = document.getElementById('personal-score-container');
-            const refreshBtn = document.getElementById('refresh-btn');
-            
-            // Show loading
-            container.innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Finding your position...</p>
-                </div>
-            `;
-            
-            // Disable refresh button temporarily
-            refreshBtn.disabled = true;
-            refreshBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Loading...';
-            
-            try {
-                // Get player info from localStorage
-                const players = JSON.parse(localStorage.getItem('friends_quiz_players') || '{}');
-                const playerInfo = players[quizId];
                 
-                if (!playerInfo) {
-                    // Player hasn't taken this quiz yet
-                    container.innerHTML = `
-                        <div style="text-align: center; padding: 24px 16px;">
-                            <div style="font-size: 40px; margin-bottom: 12px; color: var(--primary-color);">🤔</div>
-                            <h3 style="margin-bottom: 10px; font-size: 16px;">No Score Found</h3>
-                            <p style="color: #666; margin-bottom: 20px; font-size: 12px;">Take the quiz first to see your position!</p>
-                            <a href="quiz.html?quiz=${quizId}" class="btn btn-sm">
-                                <i class='bx bx-play'></i> Take the Quiz
-                            </a>
-                        </div>
-                    `;
-                    refreshBtn.disabled = false;
-                    refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh';
-                    return;
-                }
-                
-                // Get all scores for this quiz to find player's position
-                const scoresSnapshot = await db.collection('scores')
-                    .where('quizId', '==', quizId)
-                    .orderBy('score', 'desc')
-                    .orderBy('submittedAt', 'asc')
-                    .get();
-                
-                const allScores = [];
-                let playerScore = null;
-                let playerRank = 0;
-                
-                scoresSnapshot.forEach(doc => {
-                    const data = doc.data();
-                    allScores.push(data);
+                // Try alternative query (in case quizId field is missing in some documents)
+                try {
+                    // Fallback: Try to get all scores and filter client-side
+                    console.log('Trying alternative query...');
+                    const allScoresSnapshot = await db.collection('scores').get();
+                    const allScores = [];
                     
-                    // Check if this is the current player's score
-                    if (data.playerId === playerInfo.playerId) {
-                        playerScore = data;
-                        playerRank = allScores.length; // Current position in sorted array
-                    }
-                });
-                
-                if (!playerScore) {
-                    // Player score not found in database
+                    allScoresSnapshot.forEach(doc => {
+                        const data = doc.data();
+                        if (data.quizId === quizId) {
+                            allScores.push({
+                                ...data,
+                                id: doc.id,
+                                submittedAt: data.submittedAt?.toDate() || new Date()
+                            });
+                        }
+                    });
+                    
+                    // Sort by score
+                    allScores.sort((a, b) => {
+                        if (b.score !== a.score) {
+                            return b.score - a.score;
+                        }
+                        return a.submittedAt - b.submittedAt;
+                    });
+                    
+                    displayScores(allScores);
+                    refreshBtn.disabled = false;
+                    refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh';
+                    
+                } catch (fallbackError) {
+                    console.error('Fallback also failed:', fallbackError);
                     container.innerHTML = `
                         <div style="text-align: center; padding: 24px 16px;">
-                            <div style="font-size: 40px; margin-bottom: 12px; color: var(--primary-color);">🔍</div>
-                            <h3 style="margin-bottom: 10px; font-size: 16px;">Score Not Found</h3>
-                            <p style="color: #666; margin-bottom: 20px; font-size: 12px;">Your score might not be saved yet.</p>
-                            <a href="quiz.html?quiz=${quizId}" class="btn btn-sm">
-                                <i class='bx bx-play'></i> Take the Quiz
-                            </a>
+                            <div style="font-size: 40px; margin-bottom: 12px; color: var(--primary-color);">😕</div>
+                            <h3 style="margin-bottom: 10px; font-size: 16px;">Error Loading Scores</h3>
+                            <p style="color: #666; margin-bottom: 20px; font-size: 12px;">${error.message}</p>
+                            <button onclick="loadScores()" class="btn btn-sm">
+                                <i class='bx bx-refresh'></i> Try Again
+                            </button>
                         </div>
                     `;
                     refreshBtn.disabled = false;
                     refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh';
-                    return;
                 }
-                
-                // Display personal position
-                displayPersonalScore(playerScore, playerRank, allScores.length);
-                refreshBtn.disabled = false;
-                refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh';
-                
-            } catch (error) {
-                console.error('Error loading personal score:', error);
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 24px 16px;">
-                        <div style="font-size: 40px; margin-bottom: 12px; color: var(--primary-color);">😕</div>
-                        <h3 style="margin-bottom: 10px; font-size: 16px;">Error Loading Position</h3>
-                        <p style="color: #666; margin-bottom: 20px; font-size: 12px;">Please try again</p>
-                        <button onclick="loadPersonalScore()" class="btn btn-sm">
-                            <i class='bx bx-refresh'></i> Try Again
-                        </button>
-                    </div>
-                `;
-                refreshBtn.disabled = false;
-                refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh';
             }
         }
 
-        function displayFullScores(scores) {
+        function displayScores(scores) {
             const container = document.getElementById('scores-container');
             const totalPlayers = document.getElementById('total-players');
             
@@ -532,60 +386,6 @@
             });
             
             container.innerHTML = html;
-        }
-
-        function displayPersonalScore(playerScore, playerRank, totalPlayers) {
-            const container = document.getElementById('personal-score-container');
-            const totalPlayersElement = document.getElementById('total-players');
-            
-            totalPlayersElement.textContent = `${totalPlayers} player${totalPlayers !== 1 ? 's' : ''}`;
-            
-            const timeAgo = getTimeAgo(playerScore.submittedAt);
-            const percentage = (playerScore.score / 10) * 100;
-            
-            container.innerHTML = `
-                <div style="text-align: center; padding: 16px;">
-                    <div style="font-size: 48px; margin-bottom: 16px; color: var(--primary-color);">🏆</div>
-                    
-                    <div style="background: #f9f9f9; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-                        <div style="font-size: 14px; color: #666; margin-bottom: 8px;">Your Position</div>
-                        <div style="font-size: 40px; font-weight: bold; color: var(--primary-color); margin-bottom: 8px;">
-                            #${playerRank}
-                        </div>
-                        <div style="font-size: 12px; color: #888;">
-                            Out of ${totalPlayers} player${totalPlayers !== 1 ? 's' : ''}
-                        </div>
-                    </div>
-                    
-                    <div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 2px solid var(--primary-color);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <div style="text-align: left;">
-                                <div style="font-size: 16px; font-weight: bold; color: var(--text-color);">${playerScore.name}</div>
-                                <div style="font-size: 11px; color: #888; margin-top: 2px;">${timeAgo}</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 28px; font-weight: bold; color: var(--primary-color);">${playerScore.score}/10</div>
-                                <div style="font-size: 12px; color: #666;">${percentage}%</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="background: #f0f8ff; border-radius: 10px; padding: 12px; margin-top: 16px;">
-                        <div style="font-size: 13px; color: #666; margin-bottom: 6px;">
-                            <i class='bx bx-info-circle'></i> Only the quiz owner can see all scores
-                        </div>
-                        <div style="font-size: 12px; color: #888;">
-                            Your position is private and only visible to you
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 20px;">
-                        <a href="index.html" class="btn btn-sm" style="margin-bottom: 8px;">
-                            <i class='bx bx-plus'></i> Create Your Own Quiz
-                        </a>
-                    </div>
-                </div>
-            `;
         }
 
         function getTimeAgo(date) {
@@ -647,8 +447,8 @@
         }
 
         function shareQuiz() {
-            if (!quizId || !isOwner) {
-                showNotification('Only quiz owners can share!');
+            if (!quizId) {
+                showNotification('Create a quiz first to share!');
                 return;
             }
             
