@@ -13,12 +13,24 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
+    <div id="music-player" class="music-player">
+        <i class='bx bx-music'></i>
+    </div>
+
     <div class="container">
         <header>
             <a href="index.html" style="text-decoration: none;">
-                <div class="logo" style="font-size: 32px;">F•R•I•E•N•D•S</div>
+                <div class="logo">
+                    <span style="color: #FF6B6B;">F</span><span class="logo-dot" style="color: #FF9800;">•</span>
+                    <span style="color: #4CAF50;">R</span><span class="logo-dot" style="color: #9C27B0;">•</span>
+                    <span style="color: #2196F3;">I</span><span class="logo-dot" style="color: #FF5722;">•</span>
+                    <span style="color: #FFC107;">E</span><span class="logo-dot" style="color: #795548;">•</span>
+                    <span style="color: #673AB7;">N</span><span class="logo-dot" style="color: #00BCD4;">•</span>
+                    <span style="color: #E91E63;">D</span><span class="logo-dot" style="color: #8BC34A;">•</span>
+                    <span style="color: #3F51B5;">S</span>
+                </div>
             </a>
-            <p id="quiz-title" class="tagline">Loading quiz...</p>
+            <p id="quiz-title" class="tagline">Loading Christmas quiz...</p>
         </header>
 
         <div class="line"></div>
@@ -56,6 +68,7 @@
         let userAnswers = {};
         let quizId = null;
         const ATTEMPT_KEY = 'friends_quiz_attempts';
+        let audio = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             // Get quiz ID from URL
@@ -67,6 +80,12 @@
                 return;
             }
             
+            // Apply theme
+            applyTheme();
+            
+            // Setup music player
+            setupMusicPlayer();
+            
             // Check if already attempted
             if (hasAttemptedQuiz(quizId)) {
                 showAlreadyAttempted();
@@ -76,6 +95,46 @@
             // Load quiz data
             loadQuizData();
         });
+
+        function applyTheme() {
+            const themes = ['red', 'blue', 'green', 'orange', 'violet'];
+            const currentDate = new Date();
+            const month = currentDate.getMonth() + 1;
+            
+            if (month === 12) {
+                document.body.classList.add('theme-christmas');
+            } else {
+                const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+                document.body.classList.add('theme-' + randomTheme);
+            }
+        }
+
+        function setupMusicPlayer() {
+            const musicBtn = document.getElementById('music-player');
+            let isPlaying = false;
+            
+            // Try to create audio
+            try {
+                audio = new Audio('https://assets.mixkit.co/music/preview/mixkit-christmas-party-music-128.mp3');
+                audio.loop = true;
+                
+                musicBtn.addEventListener('click', () => {
+                    if (isPlaying) {
+                        audio.pause();
+                        musicBtn.innerHTML = '<i class="bx bx-music"></i>';
+                    } else {
+                        audio.play().catch(e => {
+                            console.log('Autoplay prevented:', e);
+                            musicBtn.innerHTML = '<i class="bx bx-play"></i>';
+                        });
+                        musicBtn.innerHTML = '<i class="bx bx-pause"></i>';
+                    }
+                    isPlaying = !isPlaying;
+                });
+            } catch (e) {
+                musicBtn.style.display = 'none';
+            }
+        }
 
         function hasAttemptedQuiz(quizId) {
             const attempts = JSON.parse(localStorage.getItem(ATTEMPT_KEY) || '{}');
@@ -91,11 +150,11 @@
         function showAlreadyAttempted() {
             const container = document.getElementById('quiz-container');
             container.innerHTML = `
-                <div class="card" style="text-align: center; padding: 40px 20px;">
-                    <div style="font-size: 48px; margin-bottom: 20px; color: red;">⏰</div>
-                    <h2 style="margin-bottom: 15px;">One Attempt Only!</h2>
-                    <p style="color: #666; margin-bottom: 30px;">
-                        You've already taken this quiz! Each friend can only attempt once to keep it fair. 😊
+                <div class="card" style="text-align: center; padding: 30px 20px;">
+                    <div style="font-size: 48px; margin-bottom: 15px; color: var(--primary-color);">⏰</div>
+                    <h2 style="margin-bottom: 12px;">One Attempt Only!</h2>
+                    <p style="color: #666; margin-bottom: 25px; font-size: 14px;">
+                        You've already taken this Christmas quiz! Each friend can only attempt once to keep it fair. 😊
                     </p>
                     <a href="index.html" class="btn">
                         <i class='bx bx-home'></i> Create Your Own Quiz
@@ -109,7 +168,7 @@
             container.innerHTML = `
                 <div class="loading">
                     <div class="spinner"></div>
-                    <p>Loading quiz...</p>
+                    <p>Loading Christmas quiz...</p>
                 </div>
             `;
             
@@ -121,17 +180,17 @@
                 }
                 
                 quizData = quizDoc.data();
-                document.getElementById('quiz-title').textContent = `How well do you know ${quizData.ownerName}?`;
+                document.getElementById('quiz-title').textContent = `How well do you know ${quizData.ownerName}? 🎅`;
                 
                 showNameInput();
                 
             } catch (error) {
                 console.error('Error loading quiz:', error);
                 container.innerHTML = `
-                    <div class="card" style="text-align: center; padding: 40px 20px;">
-                        <div style="font-size: 48px; margin-bottom: 20px; color: red;">😕</div>
-                        <h2 style="margin-bottom: 15px;">Quiz Not Found</h2>
-                        <p style="color: #666; margin-bottom: 30px;">
+                    <div class="card" style="text-align: center; padding: 30px 20px;">
+                        <div style="font-size: 48px; margin-bottom: 15px; color: var(--primary-color);">😕</div>
+                        <h2 style="margin-bottom: 12px;">Quiz Not Found</h2>
+                        <p style="color: #666; margin-bottom: 25px; font-size: 14px;">
                             This quiz link is invalid or has expired.
                         </p>
                         <a href="index.html" class="btn">
@@ -146,15 +205,15 @@
             const container = document.getElementById('quiz-container');
             container.innerHTML = `
                 <div class="card">
-                    <h2 style="margin-bottom: 15px; font-size: 22px;"><i class='bx bx-user' style="color: red;"></i> What's your nickname?</h2>
-                    <p style="color: #666; margin-bottom: 25px;">Enter your nickname to appear on the scoreboard</p>
+                    <h2 style="margin-bottom: 12px; font-size: 20px;"><i class='bx bx-user' style="color: var(--primary-color);"></i> What's your nickname?</h2>
+                    <p style="color: #666; margin-bottom: 20px; font-size: 13px;">Enter your nickname to appear on the scoreboard</p>
                     
                     <div class="input-group">
-                        <input type="text" id="player-name" class="input-field" placeholder="Your nickname" maxlength="20">
+                        <input type="text" id="player-name" class="input-field" placeholder="Your Christmas nickname" maxlength="20">
                     </div>
                     
                     <button id="start-quiz" class="btn" disabled>
-                        <i class='bx bx-play'></i> Start Quiz
+                        <i class='bx bx-play'></i> Start Christmas Quiz
                     </button>
                 </div>
             `;
@@ -174,7 +233,12 @@
             if (playerName.length < 2) return;
             
             userAnswers.playerName = playerName;
+            userAnswers.playerId = generatePlayerId();
             showQuestion(0);
+        }
+
+        function generatePlayerId() {
+            return 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         }
 
         function showQuestion(index) {
@@ -184,9 +248,9 @@
             const container = document.getElementById('quiz-container');
             container.innerHTML = `
                 <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h3>Question ${index + 1} of 10</h3>
-                        <span style="background: #f0f0f0; padding: 5px 15px; border-radius: 20px; font-weight: 600; color: red;">
+                        <span style="background: #f0f0f0; padding: 4px 12px; border-radius: 15px; font-weight: 600; color: var(--primary-color); font-size: 13px;">
                             ${Math.round(((index + 1) / 10) * 100)}%
                         </span>
                     </div>
@@ -197,9 +261,9 @@
                     
                     <div class="quiz-question">${question.text}</div>
                     
-                    <div class="quiz-options">
+                    <div class="answer-options">
                         ${question.options.map((option, i) => `
-                            <div class="quiz-option" data-index="${i}">
+                            <div class="answer-option ${userAnswers[index] === i ? 'selected' : ''}" data-index="${i}">
                                 ${option}
                             </div>
                         `).join('')}
@@ -207,17 +271,17 @@
                     
                     <div class="nav-buttons">
                         ${index > 0 ? `
-                            <button id="prev-btn" class="btn nav-btn" style="background: #666;">
+                            <button id="prev-btn" class="btn btn-outline nav-btn">
                                 <i class='bx bx-chevron-left'></i> Previous
                             </button>
                         ` : '<div></div>'}
                         
                         ${index < 9 ? `
-                            <button id="next-btn" class="btn nav-btn" disabled>
+                            <button id="next-btn" class="btn nav-btn" ${userAnswers[index] !== undefined ? '' : 'disabled'}>
                                 Next <i class='bx bx-chevron-right'></i>
                             </button>
                         ` : `
-                            <button id="submit-btn" class="btn nav-btn" disabled style="background: #25D366;">
+                            <button id="submit-btn" class="btn nav-btn" ${userAnswers[index] !== undefined ? '' : 'disabled'} style="background: #25D366;">
                                 <i class='bx bx-check'></i> Submit Quiz
                             </button>
                         `}
@@ -226,7 +290,7 @@
             `;
             
             // Set up answer selection
-            const options = container.querySelectorAll('.quiz-option');
+            const options = container.querySelectorAll('.answer-option');
             options.forEach(option => {
                 option.addEventListener('click', () => {
                     // Deselect all
@@ -241,7 +305,7 @@
                     if (submitBtn) submitBtn.disabled = false;
                     
                     // Store answer
-                    userAnswers[index] = option.dataset.index;
+                    userAnswers[index] = parseInt(option.dataset.index);
                 });
             });
             
@@ -258,15 +322,6 @@
                 });
             } else {
                 document.getElementById('submit-btn').addEventListener('click', submitQuiz);
-            }
-            
-            // Restore previous selection if any
-            if (userAnswers[index] !== undefined) {
-                options[userAnswers[index]].classList.add('selected');
-                const nextBtn = document.getElementById('next-btn');
-                const submitBtn = document.getElementById('submit-btn');
-                if (nextBtn) nextBtn.disabled = false;
-                if (submitBtn) submitBtn.disabled = false;
             }
         }
 
@@ -287,15 +342,23 @@
             container.innerHTML = `
                 <div class="loading">
                     <div class="spinner"></div>
-                    <p>Saving your score...</p>
+                    <p>Calculating your Christmas score...</p>
                 </div>
             `;
             
             try {
-                // Save score to database
+                // Get player rank (count existing scores)
+                const scoresSnapshot = await db.collection('scores').doc(quizId)
+                    .collection('attempts').get();
+                const totalPlayers = scoresSnapshot.size + 1;
+                const playerRank = totalPlayers;
+                
+                // Save score to database with player ID
                 const scoreData = {
                     name: userAnswers.playerName,
+                    playerId: userAnswers.playerId,
                     score: score,
+                    rank: playerRank,
                     submittedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
@@ -304,99 +367,111 @@
                 // Mark as attempted
                 markQuizAttempted(quizId);
                 
+                // Save player info to local storage
+                savePlayerInfo(quizId, userAnswers.playerName, userAnswers.playerId);
+                
                 // Show results
-                showResults(score);
+                showResults(score, playerRank);
                 
             } catch (error) {
                 console.error('Error saving score:', error);
-                showResults(score); // Still show results even if save fails
+                showResults(score, 1); // Show results even if save fails
             }
         }
 
-        function showResults(score) {
+        function savePlayerInfo(quizId, name, playerId) {
+            const players = JSON.parse(localStorage.getItem('friends_quiz_players') || '{}');
+            players[quizId] = {
+                name: name,
+                playerId: playerId,
+                date: new Date().toISOString()
+            };
+            localStorage.setItem('friends_quiz_players', JSON.stringify(players));
+        }
+
+        function showResults(score, rank) {
             const container = document.getElementById('quiz-container');
+            const percentage = (score / 10) * 100;
             
             // Determine result message
             let emoji, message;
             if (score === 10) {
                 emoji = '🏆';
-                message = 'BEST FRIEND ALERT!';
+                message = 'CHRISTMAS CHAMPION!';
             } else if (score >= 7) {
-                emoji = '😄';
-                message = 'Close Friend!';
+                emoji = '🎅';
+                message = 'Christmas Expert!';
             } else if (score >= 5) {
-                emoji = '👍';
+                emoji = '✨';
                 message = 'Good Friend!';
             } else {
-                emoji = '😅';
-                message = 'Still Learning!';
+                emoji = '🎄';
+                message = 'Getting There!';
             }
+            
+            const messages = [
+                "Perfect score! You're the ultimate Christmas friend! 🎯",
+                "Almost perfect! You know their Christmas secrets! 🎅",
+                "Excellent! You pay attention to Christmas details! ✨",
+                "Great job! You're a true Christmas friend! 😊",
+                "Good score! You know the important Christmas things! 👍",
+                "Not bad! You're learning their Christmas ways! 🤔",
+                "Room for improvement! More Christmas time needed! 🎄",
+                "Getting there! Share more Christmas moments! 💬",
+                "Early days! Christmas friendship is growing! 🌱",
+                "Just starting! The Christmas journey begins! 🚀",
+                "Surprise! Opposite Christmas styles attract! 🎁"
+            ];
+            
+            const resultMessage = messages[10 - score] || "Thanks for playing this Christmas quiz!";
             
             container.innerHTML = `
                 <div class="card" style="text-align: center;">
                     <div class="result-emoji">${emoji}</div>
                     <h2 style="margin-bottom: 10px;">${message}</h2>
-                    <p style="color: #666; margin-bottom: 30px;">
-                        You scored ${score} out of 10 questions about ${quizData.ownerName}!
+                    <p style="color: #666; margin-bottom: 25px; font-size: 14px;">
+                        You scored ${score} out of 10 about ${quizData.ownerName}'s Christmas!
                     </p>
                     
                     <div class="score-circle">
-                        ${score}/10
+                        <div class="score-main">${score}/10</div>
+                        <div class="score-percentage">${percentage}%</div>
                     </div>
                     
-                    <div style="margin: 30px 0; padding: 20px; background: #f9f9f9; border-radius: 12px;">
-                        <h4 style="margin-bottom: 10px;"><i class='bx bx-star' style="color: red;"></i> Your Result</h4>
-                        <p style="color: #666;">
-                            ${getResultMessage(score)}
+                    <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 10px;">
+                        <h4 style="margin-bottom: 8px; color: var(--primary-color);"><i class='bx bx-star'></i> Your Result</h4>
+                        <p style="color: #666; font-size: 13px; margin-bottom: 10px;">
+                            ${resultMessage}
+                        </p>
+                        <p style="color: var(--primary-color); font-weight: 600; font-size: 14px;">
+                            <i class='bx bx-trophy'></i> You are #${rank} on the Christmas scoreboard!
                         </p>
                     </div>
                     
-                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                        <a href="scoreboard.html?quiz=${quizId}" class="btn" style="flex: 1;">
-                            <i class='bx bx-trophy'></i> View Scoreboard
-                        </a>
-                        <a href="index.html" class="btn" style="flex: 1; background: #666;">
+                    <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                        <a href="index.html" class="btn" style="flex: 1;">
                             <i class='bx bx-plus'></i> Create My Quiz
                         </a>
                     </div>
                     
-                    <button onclick="shareResult()" class="btn" style="background: #4267B2;">
+                    <button onclick="shareResult(${score})" class="btn" style="background: #4267B2;">
                         <i class='bx bx-share-alt'></i> Share My Score
                     </button>
                 </div>
             `;
         }
 
-        function getResultMessage(score) {
-            const messages = [
-                "Perfect score! You know them better than they know themselves! 🎯",
-                "Almost perfect! You're clearly one of their closest friends! 👯",
-                "Excellent! You pay attention to the details that matter! ✨",
-                "Great job! You know them pretty well! 😊",
-                "Good score! You know the important things! 👍",
-                "Not bad! You're getting to know them better! 🤔",
-                "Room for improvement! Keep learning about them! 📚",
-                "Getting there! Maybe have more heart-to-heart talks! 💬",
-                "Early days! Every friendship starts somewhere! 🌱",
-                "Just starting! This is the beginning of your journey! 🚀",
-                "Surprise! Sometimes opposites attract the most! 🤷‍♂️"
-            ];
-            
-            return messages[10 - score] || "Thanks for playing!";
-        }
-
-        function shareResult() {
-            const score = userAnswers.score || 0;
-            const message = `I scored ${score}/10 on ${quizData.ownerName}'s FRIENDS quiz! 🏆 Can you beat my score? ${window.location.origin}/quiz.html?quiz=${quizId}`;
+        function shareResult(score) {
+            const message = `I scored ${score}/10 on ${quizData.ownerName}'s Christmas FRIENDS quiz! 🎄 Can you beat my score? ${window.location.origin}/quiz.html?quiz=${quizId}`;
             
             if (navigator.share) {
                 navigator.share({
-                    title: 'FRIENDS Quiz Result',
+                    title: 'FRIENDS Christmas Quiz Result',
                     text: message
                 });
             } else {
                 navigator.clipboard.writeText(message).then(() => {
-                    showNotification('Result copied to clipboard! Share it with friends!');
+                    showNotification('Result copied! Share it with friends!');
                 });
             }
         }
