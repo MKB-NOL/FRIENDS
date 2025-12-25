@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Quiz - FRIENDS</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="christmas-effects"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header style="text-align: center; margin-bottom: 20px;">
+            <a href="index.html" style="text-decoration: none; color: inherit;">
+                <h1>🎅 FRIENDS 🎅</h1>
+            </a>
+            <p class="tagline">Create your personalized quiz</p>
+        </header>
+
+        <!-- Progress -->
+        <div class="card" style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3>Step 1 of 2</h3>
+                    <p>Select 10 questions</p>
+                </div>
+                <div id="selected-count" style="background: var(--accent); color: var(--dark); padding: 10px 20px; border-radius: 20px; font-weight: bold;">
+                    0/10 selected
+                </div>
+            </div>
+            <div style="height: 10px; background: #E0E0E0; border-radius: 5px; margin-top: 10px;">
+                <div id="progress-bar" style="width: 0%; height: 100%; background: var(--primary); border-radius: 5px; transition: width 0.3s ease;"></div>
+            </div>
+        </div>
+
+        <!-- Nickname Input -->
+        <div class="card">
+            <div class="form-group">
+                <label for="nickname"><i class='bx bx-user'></i> Your Nickname</label>
+                <input type="text" id="nickname" class="form-control" placeholder="e.g., CaptainAwesome" maxlength="20">
+                <small style="color: #666; display: block; margin-top: 5px;">This is what will appear on the scoreboard</small>
+            </div>
+        </div>
+
+        <!-- Questions Selection -->
+        <div class="card">
+            <h3 style="margin-bottom: 20px;">📝 Select 10 Questions</h3>
+            <p style="margin-bottom: 15px; color: #666;">Tap on questions to select them</p>
+            
+            <div id="questions-container">
+                <!-- Questions will be loaded here -->
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="generate-btn" class="btn btn-primary" disabled>
+                    <i class='bx bx-check-circle'></i> Generate My Quiz (0/10)
+                </button>
+            </div>
+        </div>
+
+        <!-- Ad Container -->
+        <div class="ad-container">
+            <p style="color: #666; font-style: italic;">Ad space</p>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/create.js"></script>
+</body>
+</html>
