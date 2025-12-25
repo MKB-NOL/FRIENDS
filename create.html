@@ -8,31 +8,37 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="style.css">
     <script src="https://richinfo.co/richpartners/in-page/js/richads-ob.js?pubid=997197&siteid=381604" async></script>
-    <!-- Firebase v8 for compatibility -->
+    <!-- Firebase v8 -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
 </head>
 <body>
     <div class="container">
         <header>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <a href="index.html" style="text-decoration: none;">
-                    <div class="logo" style="font-size: 32px;">F•R•I•E•N•D•S</div>
-                </a>
-                <div id="selected-count" style="background: red; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600;">
-                    0/10
+            <a href="index.html" style="text-decoration: none;">
+                <div class="logo">
+                    <span style="color: #FF6B6B;">F</span><span class="logo-dot" style="color: #FF9800;">•</span>
+                    <span style="color: #4CAF50;">R</span><span class="logo-dot" style="color: #9C27B0;">•</span>
+                    <span style="color: #2196F3;">I</span><span class="logo-dot" style="color: #FF5722;">•</span>
+                    <span style="color: #FFC107;">E</span><span class="logo-dot" style="color: #795548;">•</span>
+                    <span style="color: #673AB7;">N</span><span class="logo-dot" style="color: #00BCD4;">•</span>
+                    <span style="color: #E91E63;">D</span><span class="logo-dot" style="color: #8BC34A;">•</span>
+                    <span style="color: #3F51B5;">S</span>
                 </div>
-            </header>
+            </a>
+            <div id="selected-count" style="background: var(--primary-color); color: white; padding: 6px 12px; border-radius: 15px; font-weight: 600; font-size: 13px; display: inline-block; margin-top: 8px;">
+                0/10
+            </div>
+        </header>
 
         <div class="line"></div>
 
         <!-- Nickname Section -->
         <div class="card">
             <div class="input-group">
-                <label class="input-label"><i class='bx bx-user' style="color: red;"></i> Your Nickname</label>
-                <input type="text" id="nickname" class="input-field" placeholder="e.g., CaptainAwesome" maxlength="20">
-                <p style="color: #666; font-size: 14px; margin-top: 8px;">This name will appear on the scoreboard</p>
+                <label class="input-label"><i class='bx bx-user' style="color: var(--primary-color);"></i> Your Nickname</label>
+                <input type="text" id="nickname" class="input-field" placeholder="e.g., SantaHelper" maxlength="20">
+                <p style="color: #666; font-size: 12px; margin-top: 6px;">This name will appear on the scoreboard</p>
             </div>
         </div>
 
@@ -40,7 +46,7 @@
             <div id="progress-bar" class="progress-bar"></div>
         </div>
 
-        <p id="selection-counter" class="selection-counter">Select 10 questions about yourself</p>
+        <p id="selection-counter" class="selection-counter">🎄 Select 10 Christmas questions about yourself 🎅</p>
 
         <!-- Questions List -->
         <div id="questions-container">
@@ -77,113 +83,112 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const analytics = firebase.analytics();
 
-        // Questions Database (20 questions)
+        // Questions Database (20 Christmas-themed questions)
         const QUESTIONS = [
             {
                 id: 1,
-                text: "What would I save first in a fire?",
-                options: ["Phone 📱", "Photo albums 📸", "Laptop 💻", "Favorite hoodie 👕", "Pet 🐾", "Myself! 🏃‍♂️"]
+                text: "What would I save first in a Christmas fire? 🎄🔥",
+                options: ["Christmas gifts 🎁", "Phone with family photos 📱", "Favorite Christmas sweater 👕", "Pet under the tree 🐾"]
             },
             {
                 id: 2,
-                text: "What would I do on a perfect weekend?",
-                options: ["Netflix marathon 📺", "Outdoor adventure 🏕️", "Party with friends 🎉", "Sleep all day 😴", "Try new restaurants 🍽️", "Read books 📚"]
+                text: "What would I do on a perfect Christmas weekend? 🎅",
+                options: ["Watch Christmas movies all day 🎬", "Build a snowman outside ⛄", "Christmas party with friends 🎉", "Sleep after big dinner 😴"]
             },
             {
                 id: 3,
-                text: "What's my favorite color?",
-                options: ["Red ❤️", "Blue 💙", "Green 💚", "Black ⚫", "White ⚪", "Rainbow 🌈"]
+                text: "What's my favorite Christmas color? 🎨",
+                options: ["Christmas Red ❤️", "Snow White ⛄", "Christmas Green 🎄", "Gold Star ⭐"]
             },
             {
                 id: 4,
-                text: "What's my hidden talent?",
-                options: ["Great cook 👨‍🍳", "Can sing well 🎵", "Speaks multiple languages 🗣️", "Really good at trivia 🧠", "Great dancer 💃", "I'm secretly average! 🤫"]
+                text: "What's my hidden Christmas talent? 🎁",
+                options: ["Best gift wrapper 🎀", "Christmas carol singer 🎵", "Cookie baker 🍪", "Christmas tree decorator 🎄"]
             },
             {
                 id: 5,
-                text: "What's my dream vacation destination?",
-                options: ["Bali 🌴", "Japan 🗾", "Italy 🏛️", "New Zealand 🏔️", "Maldives 🏝️", "Anywhere with a beach! 🌊"]
+                text: "Where's my dream Christmas vacation? ✈️",
+                options: ["Lapland to meet Santa 🎅", "Christmas in New York 🗽", "Beach Christmas 🌴", "Christmas market in Europe 🏰"]
             },
             {
                 id: 6,
-                text: "What's my movie category?",
-                options: ["Action 💥", "Romance 💕", "Comedy 😂", "Horror 👻", "Sci-fi 🚀", "Animated 🎬"]
+                text: "What's my favorite Christmas movie? 🎬",
+                options: ["Home Alone 😂", "The Grinch 👺", "Elf 🧝", "Love Actually ❤️"]
             },
             {
                 id: 7,
-                text: "What's my favorite type of food?",
-                options: ["Italian 🍝", "Mexican 🌮", "Chinese 🥡", "Indian 🍛", "Burgers 🍔", "Sushi 🍣"]
+                text: "What's my favorite Christmas food? 🍽️",
+                options: ["Christmas cookies 🍪", "Turkey dinner 🦃", "Christmas ham 🍖", "Hot chocolate ☕"]
             },
             {
                 id: 8,
-                text: "What's my go-to karaoke song?",
-                options: ["Don't Stop Believin' 🎤", "Bohemian Rhapsody 🎸", "Wannabe 👯‍♀️", "Shape of You 🎶", "Sweet Caroline 👏", "I don't sing! 🙊"]
+                text: "What's my go-to Christmas song? 🎵",
+                options: ["Last Christmas 🎤", "All I Want for Christmas ❤️", "Jingle Bell Rock 🔔", "Silent Night 🌃"]
             },
             {
                 id: 9,
-                text: "What's my biggest pet peeve?",
-                options: ["Being late ⏰", "Loud chewing 🤢", "Bad texting etiquette 📱", "People who don't listen 👂", "Messy spaces 🗑️", "Rude people 😠"]
+                text: "What's my Christmas pet peeve? 😠",
+                options: ["Early Christmas music 🎵", "Bad gift wrappers 🎁", "Fake snow ❄️", "Overcooked turkey 🦃"]
             },
             {
                 id: 10,
-                text: "What superpower would I choose?",
-                options: ["Invisibility 👻", "Flight 🦸‍♂️", "Time travel ⏳", "Teleportation ✨", "Mind reading 🧠", "Super strength 💪"]
+                text: "What Christmas superpower would I choose? 🦸‍♂️",
+                options: ["Deliver all gifts instantly 🎁", "Make snow anywhere ❄️", "Perfect gift ideas 💡", "Endless Christmas cookies 🍪"]
             },
             {
                 id: 11,
-                text: "What's my coffee order?",
-                options: ["Black coffee ☕", "Latte with oat milk 🥛", "I don't drink coffee ❌", "Sweet frappuccino 🍦", "Espresso shot ⚡", "Tea instead! 🍵"]
+                text: "What's my Christmas morning drink? ☕",
+                options: ["Hot chocolate with marshmallows ☕", "Christmas coffee ☕", "Orange juice 🍊", "Eggnog 🥛"]
             },
             {
                 id: 12,
-                text: "What emoji do I use the most?",
-                options: ["😂", "❤️", "🔥", "😭", "🤔", "✨"]
+                text: "What's my most used Christmas emoji? ✨",
+                options: ["🎄", "🎅", "🎁", "❄️"]
             },
             {
                 id: 13,
-                text: "How do I handle stress?",
-                options: ["Exercise 🏃‍♀️", "Eat junk food 🍕", "Talk to friends 🗣️", "Play video games 🎮", "Listen to music 🎧", "Sleep it off 😴"]
+                text: "How do I handle Christmas stress? 🎄",
+                options: ["Eat more cookies 🍪", "Watch Christmas movies 🎬", "Go shopping 🛍️", "Take a nap 😴"]
             },
             {
                 id: 14,
-                text: "What's my signature style?",
-                options: ["Comfortable 👟", "Trendy 👕", "Classic 👔", "Sporty 🏀", "Mix of everything 🎨", "Pajamas all day! 🛏️"]
+                text: "What's my Christmas style? 👕",
+                options: ["Ugly Christmas sweater 🎄", "Cozy pajamas 🛏️", "Festive dress 👗", "Santa costume 🎅"]
             },
             {
                 id: 15,
-                text: "What reality show would I survive on?",
-                options: ["Survivor 🏝️", "The Amazing Race 🌍", "Big Brother 🏠", "Love Island ❤️", "Naked and Afraid 🥶", "I'd be voted off first! 🚪"]
+                text: "Which Christmas show would I survive on? 📺",
+                options: ["Baking competition 🍪", "Christmas decorating 🎄", "Gift wrapping 🎁", "Carol singing 🎵"]
             },
             {
                 id: 16,
-                text: "What's my guilty pleasure?",
-                options: ["Reality TV 📺", "Junk food 🍫", "Social media 📱", "Rom-coms 💕", "Shopping 🛍️", "All of the above! 🙈"]
+                text: "What's my Christmas guilty pleasure? 🎁",
+                options: ["Eating cookies for breakfast 🍪", "Opening gifts early 🎁", "Watching same movies yearly 🎬", "All the food! 🍽️"]
             },
             {
                 id: 17,
-                text: "How do I celebrate Christmas?",
-                options: ["Big family dinner 👨‍👩‍👧‍👦", "Quiet at home 🏠", "Travel somewhere ✈️", "Lots of parties 🎉", "Volunteering ❤️", "All about the food! 🍪"]
+                text: "How do I celebrate Christmas Eve? 🌃",
+                options: ["Family dinner 👨‍👩‍👧‍👦", "Church service ⛪", "Presents under tree 🎁", "Christmas movie marathon 🎬"]
             },
             {
                 id: 18,
-                text: "What makes me laugh the most?",
-                options: ["Dad jokes 😂", "Memes 📱", "Silly animal videos 🐶", "Friends' stories 👯", "Awkward situations 😅", "Everything! 🤣"]
+                text: "What makes me laugh most at Christmas? 😂",
+                options: ["Family stories 👨‍👩‍👧‍👦", "Funny gifts 🎁", "Christmas fails 😅", "Santa jokes 🎅"]
             },
             {
                 id: 19,
-                text: "What's my favorite sport to watch?",
-                options: ["Soccer ⚽", "Basketball 🏀", "Tennis 🎾", "Esports 🎮", "None, I don't watch sports 🙅‍♂️", "All sports! 🏆"]
+                text: "What's my favorite Christmas sport? 🏀",
+                options: ["Ice skating ⛸️", "Snowball fight ❄️", "Skiing 🎿", "Watching by the fire 🔥"]
             },
             {
                 id: 20,
-                text: "What's my ideal Friday night?",
-                options: ["Movie night 🎬", "Club dancing 💃", "Dinner with friends 🍽️", "Video games 🎮", "Early sleep 😴", "Something spontaneous! 🎲"]
+                text: "What's my ideal Christmas night? 🌙",
+                options: ["By the fireplace 🔥", "Christmas lights drive 🚗", "Board games 🎲", "Early sleep 😴"]
             }
         ];
 
-        let selectedQuestions = new Set();
+        let selectedQuestions = [];
         let selectedAnswers = {};
 
         // Load questions on page load
@@ -193,7 +198,23 @@
             // Set up event listeners
             document.getElementById('create-btn').addEventListener('click', createQuiz);
             document.getElementById('nickname').addEventListener('input', validateForm);
+            
+            // Apply theme
+            applyTheme();
         });
+
+        function applyTheme() {
+            const themes = ['red', 'blue', 'green', 'orange', 'violet'];
+            const currentDate = new Date();
+            const month = currentDate.getMonth() + 1;
+            
+            if (month === 12) {
+                document.body.classList.add('theme-christmas');
+            } else {
+                const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+                document.body.classList.add('theme-' + randomTheme);
+            }
+        }
 
         function loadQuestions() {
             const container = document.getElementById('questions-container');
@@ -209,47 +230,128 @@
                 
                 questionCard.innerHTML = `
                     <div class="question-text">${question.text}</div>
-                    <div class="question-options">
-                        ${question.options.slice(0, 3).map(option => `
-                            <span class="option">${option}</span>
+                    <div class="answer-preview">
+                        ${question.options.map(option => `
+                            <span>${option}</span>
                         `).join('')}
-                        ${question.options.length > 3 ? `<span class="option">+${question.options.length - 3} more</span>` : ''}
+                    </div>
+                    <div style="color: var(--primary-color); font-size: 12px; margin-top: 8px; display: none;" class="selected-answer">
+                        <i class='bx bx-check'></i> Selected: <span class="selected-text"></span>
                     </div>
                 `;
                 
                 questionCard.addEventListener('click', () => {
-                    toggleQuestionSelection(question.id, question.options[0]);
+                    showAnswerSelection(question.id);
                 });
                 
                 container.appendChild(questionCard);
             });
         }
 
-        function toggleQuestionSelection(questionId, selectedOption) {
+        function showAnswerSelection(questionId) {
+            const question = QUESTIONS.find(q => q.id === questionId);
             const questionCard = document.querySelector(`[data-id="${questionId}"]`);
             
-            if (selectedQuestions.has(questionId)) {
-                // Deselect
-                selectedQuestions.delete(questionId);
-                delete selectedAnswers[questionId];
-                questionCard.classList.remove('selected');
-            } else {
-                // Select if we have less than 10
-                if (selectedQuestions.size < 10) {
-                    selectedQuestions.add(questionId);
-                    selectedAnswers[questionId] = selectedOption;
+            // Create answer selection modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                padding: 20px;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 20px; max-width: 400px; width: 100%; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="font-size: 16px; color: var(--primary-color);">Select Answer</h3>
+                        <button id="close-modal" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #666;">×</button>
+                    </div>
+                    
+                    <div class="question-text" style="margin-bottom: 20px; font-size: 15px;">${question.text}</div>
+                    
+                    <div class="answer-options">
+                        ${question.options.map((option, index) => `
+                            <div class="answer-option ${selectedAnswers[questionId] === option ? 'selected' : ''}" 
+                                 data-option="${option}">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <button id="save-answer" class="btn" style="margin-top: 20px;">
+                        <i class='bx bx-save'></i> Save Answer
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Add event listeners
+            document.getElementById('close-modal').addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            const answerOptions = modal.querySelectorAll('.answer-option');
+            let selectedOption = selectedAnswers[questionId];
+            
+            answerOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    answerOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedOption = option.dataset.option;
+                });
+            });
+            
+            document.getElementById('save-answer').addEventListener('click', () => {
+                if (selectedOption) {
+                    saveAnswer(questionId, selectedOption, questionCard);
+                    document.body.removeChild(modal);
+                } else {
+                    showNotification('Please select an answer!');
+                }
+            });
+            
+            // Close on background click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
+        }
+
+        function saveAnswer(questionId, answer, questionCard) {
+            // Check if question already selected
+            const existingIndex = selectedQuestions.indexOf(questionId);
+            
+            if (existingIndex === -1) {
+                // Add new question if less than 10
+                if (selectedQuestions.length < 10) {
+                    selectedQuestions.push(questionId);
+                    selectedAnswers[questionId] = answer;
                     questionCard.classList.add('selected');
                     
-                    // Add subtle animation
-                    questionCard.style.transform = 'scale(0.98)';
-                    setTimeout(() => {
-                        questionCard.style.transform = 'scale(1)';
-                    }, 100);
+                    // Show selected answer
+                    const selectedText = questionCard.querySelector('.selected-text');
+                    const selectedDiv = questionCard.querySelector('.selected-answer');
+                    selectedText.textContent = answer;
+                    selectedDiv.style.display = 'block';
                 } else {
-                    // Show notification
                     showNotification('Maximum 10 questions allowed!');
                     return;
                 }
+            } else {
+                // Update existing answer
+                selectedAnswers[questionId] = answer;
+                const selectedText = questionCard.querySelector('.selected-text');
+                selectedText.textContent = answer;
             }
             
             updateSelectionUI();
@@ -257,7 +359,7 @@
         }
 
         function updateSelectionUI() {
-            const count = selectedQuestions.size;
+            const count = selectedQuestions.length;
             const countElement = document.getElementById('selected-count');
             const progressBar = document.getElementById('progress-bar');
             const counterText = document.getElementById('selection-counter');
@@ -266,11 +368,11 @@
             progressBar.style.width = `${(count / 10) * 100}%`;
             
             if (count === 10) {
-                counterText.innerHTML = '<i class="bx bx-check" style="color: red;"></i> All 10 questions selected!';
-                countElement.style.background = '#25D366'; // Green when complete
+                counterText.innerHTML = '<i class="bx bx-check" style="color: var(--primary-color);"></i> All 10 questions selected!';
+                countElement.style.background = '#25D366';
             } else {
                 counterText.textContent = `Select ${10 - count} more questions`;
-                countElement.style.background = 'red';
+                countElement.style.background = 'var(--primary-color)';
             }
         }
 
@@ -278,7 +380,7 @@
             const nickname = document.getElementById('nickname').value.trim();
             const createBtn = document.getElementById('create-btn');
             
-            if (nickname.length >= 2 && selectedQuestions.size === 10) {
+            if (nickname.length >= 2 && selectedQuestions.length === 10) {
                 createBtn.disabled = false;
                 createBtn.innerHTML = '<i class="bx bx-check-circle"></i> Create My Quiz';
             } else {
@@ -290,7 +392,7 @@
         async function createQuiz() {
             const nickname = document.getElementById('nickname').value.trim();
             
-            if (!nickname || selectedQuestions.size !== 10) {
+            if (!nickname || selectedQuestions.length !== 10) {
                 showNotification('Please complete all requirements!');
                 return;
             }
@@ -306,13 +408,13 @@
                 const quizData = {
                     ownerName: nickname,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    questions: Array.from(selectedQuestions).map(id => {
+                    questions: selectedQuestions.map(id => {
                         const question = QUESTIONS.find(q => q.id === id);
                         return {
                             id: question.id,
                             text: question.text,
                             options: question.options,
-                            correctAnswer: selectedAnswers[question.id]
+                            correctAnswer: selectedAnswers[id]
                         };
                     })
                 };
@@ -321,8 +423,8 @@
                 const quizRef = await db.collection('quizzes').add(quizData);
                 const quizId = quizRef.id;
                 
-                // Track analytics
-                analytics.logEvent('quiz_created');
+                // Save to local storage for history
+                saveQuizToHistory(quizId, nickname);
                 
                 // Redirect to share page
                 window.location.href = `share.html?quiz=${quizId}`;
@@ -333,6 +435,22 @@
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
+        }
+
+        function saveQuizToHistory(quizId, nickname) {
+            const history = JSON.parse(localStorage.getItem('friends_quiz_history') || '[]');
+            history.unshift({
+                id: quizId,
+                name: nickname,
+                date: new Date().toISOString()
+            });
+            
+            // Keep only last 10 quizzes
+            if (history.length > 10) {
+                history.pop();
+            }
+            
+            localStorage.setItem('friends_quiz_history', JSON.stringify(history));
         }
 
         function showNotification(message) {
