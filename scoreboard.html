@@ -17,16 +17,16 @@
         <header>
             <a href="index.html" style="text-decoration: none;">
                 <div class="logo">
-                    <span style="color: #FF6B6B;">F</span><span class="logo-dot" style="color: #FF9800;">•</span>
-                    <span style="color: #4CAF50;">R</span><span class="logo-dot" style="color: #9C27B0;">•</span>
-                    <span style="color: #2196F3;">I</span><span class="logo-dot" style="color: #FF5722;">•</span>
+                    <span style="color: #FF4444;">F</span><span class="logo-dot" style="color: #FF9800;">•</span>
+                    <span style="color: #2ECC71;">R</span><span class="logo-dot" style="color: #9C27B0;">•</span>
+                    <span style="color: #4A90E2;">I</span><span class="logo-dot" style="color: #FF5722;">•</span>
                     <span style="color: #FFC107;">E</span><span class="logo-dot" style="color: #795548;">•</span>
                     <span style="color: #673AB7;">N</span><span class="logo-dot" style="color: #00BCD4;">•</span>
                     <span style="color: #E91E63;">D</span><span class="logo-dot" style="color: #8BC34A;">•</span>
                     <span style="color: #3F51B5;">S</span>
                 </div>
             </a>
-            <p id="scoreboard-title" class="tagline">Christmas Scoreboard 🎄</p>
+            <p id="scoreboard-title" class="tagline">Live Scoreboard</p>
         </header>
 
         <div class="line"></div>
@@ -46,9 +46,9 @@
             </div>
 
             <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h2 style="font-size: 20px;"><i class='bx bx-trophy' style="color: var(--primary-color);"></i> Live Ranking</h2>
-                    <span id="total-players" style="background: #f0f0f0; padding: 4px 12px; border-radius: 15px; font-weight: 600; font-size: 13px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h2 style="font-size: 18px;"><i class='bx bx-trophy' style="color: var(--primary-color);"></i> Live Ranking</h2>
+                    <span id="total-players" style="background: #f0f0f0; padding: 3px 10px; border-radius: 12px; font-weight: 600; font-size: 12px;">
                         0 players
                     </span>
                 </div>
@@ -57,11 +57,11 @@
                     <!-- Scores loaded by JavaScript -->
                 </div>
                 
-                <div style="margin-top: 25px;">
-                    <button id="refresh-btn" class="btn btn-small" style="margin-bottom: 8px;">
-                        <i class='bx bx-refresh'></i> Refresh Scores
+                <div style="margin-top: 20px;">
+                    <button id="refresh-btn" class="btn btn-sm" style="margin-bottom: 6px;">
+                        <i class='bx bx-refresh'></i> Refresh
                     </button>
-                    <button id="share-btn" class="btn btn-small btn-outline">
+                    <button id="share-btn" class="btn btn-sm btn-outline">
                         <i class='bx bx-share-alt'></i> Challenge Friends
                     </button>
                 </div>
@@ -71,13 +71,13 @@
         <!-- History Content -->
         <div id="history-content" style="display: none;">
             <div class="card">
-                <h2 style="font-size: 20px; margin-bottom: 15px;"><i class='bx bx-history' style="color: var(--primary-color);"></i> Your Quiz History</h2>
+                <h2 style="font-size: 18px; margin-bottom: 12px;"><i class='bx bx-history' style="color: var(--primary-color);"></i> Your Quiz History</h2>
                 
                 <div id="history-container">
                     <!-- History loaded by JavaScript -->
                 </div>
                 
-                <p style="color: #666; font-size: 13px; text-align: center; margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 10px;">
+                <p style="color: #666; font-size: 12px; text-align: center; margin-top: 16px; padding: 12px; background: #f9f9f9; border-radius: 8px;">
                     <i class='bx bx-info-circle'></i> Click on any quiz to view its scoreboard
                 </p>
             </div>
@@ -99,7 +99,7 @@
         // Initialize Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyALNlMLF-Fxu87Ge5yfhp2m1R-vU58XcLo",
-            authDomain: "besides-sm.firebaseapp.com",
+            authDomain: "besides-sm.firebasestorage.app",
             projectId: "besides-sm",
             storageBucket: "besides-sm.firebasestorage.app",
             messagingSenderId: "897908486036",
@@ -166,15 +166,8 @@
 
         function applyTheme() {
             const themes = ['red', 'blue', 'green', 'orange', 'violet'];
-            const currentDate = new Date();
-            const month = currentDate.getMonth() + 1;
-            
-            if (month === 12) {
-                document.body.classList.add('theme-christmas');
-            } else {
-                const randomTheme = themes[Math.floor(Math.random() * themes.length)];
-                document.body.classList.add('theme-' + randomTheme);
-            }
+            const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+            document.body.classList.add('theme-' + randomTheme);
         }
 
         async function loadQuizInfo() {
@@ -184,7 +177,7 @@
                 if (quizDoc.exists) {
                     const data = quizDoc.data();
                     quizOwner = data.ownerName;
-                    document.getElementById('scoreboard-title').textContent = `${data.ownerName}'s Christmas Scoreboard 🎅`;
+                    document.getElementById('scoreboard-title').textContent = `${data.ownerName}'s Scoreboard`;
                     
                     // Load statistics
                     const scoresSnapshot = await db.collection('scores').doc(quizId)
@@ -199,19 +192,19 @@
                     const avgScore = totalPlayers > 0 ? (totalScore / totalPlayers).toFixed(1) : 0;
                     
                     const statsHtml = `
-                        <h3 style="margin-bottom: 15px; font-size: 18px;">📊 Quiz Statistics</h3>
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                            <div style="text-align: center; padding: 15px; background: #f9f9f9; border-radius: 10px;">
-                                <div style="font-size: 28px; font-weight: bold; color: var(--primary-color);">
+                        <h3 style="margin-bottom: 12px; font-size: 16px;">📊 Quiz Statistics</h3>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                            <div style="text-align: center; padding: 12px; background: #f9f9f9; border-radius: 8px;">
+                                <div style="font-size: 24px; font-weight: bold; color: var(--primary-color);">
                                     ${totalPlayers}
                                 </div>
-                                <div style="color: #666; font-size: 12px; margin-top: 4px;">Total Players</div>
+                                <div style="color: #666; font-size: 11px; margin-top: 3px;">Total Players</div>
                             </div>
-                            <div style="text-align: center; padding: 15px; background: #f9f9f9; border-radius: 10px;">
-                                <div style="font-size: 28px; font-weight: bold; color: var(--primary-color);">
+                            <div style="text-align: center; padding: 12px; background: #f9f9f9; border-radius: 8px;">
+                                <div style="font-size: 24px; font-weight: bold; color: var(--primary-color);">
                                     ${avgScore}/10
                                 </div>
-                                <div style="color: #666; font-size: 12px; margin-top: 4px;">Average Score</div>
+                                <div style="color: #666; font-size: 11px; margin-top: 3px;">Average Score</div>
                             </div>
                         </div>
                     `;
@@ -221,8 +214,8 @@
             } catch (error) {
                 console.error('Error loading quiz info:', error);
                 document.getElementById('stats-container').innerHTML = `
-                    <div style="text-align: center; padding: 20px; color: #666;">
-                        <p>Unable to load statistics</p>
+                    <div style="text-align: center; padding: 16px; color: #666; font-size: 12px;">
+                        Unable to load statistics
                     </div>
                 `;
             }
@@ -236,7 +229,7 @@
             container.innerHTML = `
                 <div class="loading">
                     <div class="spinner"></div>
-                    <p>Loading Christmas scores...</p>
+                    <p>Loading scores...</p>
                 </div>
             `;
             
@@ -245,7 +238,7 @@
             refreshBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Loading...';
             
             try {
-                // Get scores
+                // Get scores with quiz ID included (already stored with each score)
                 const scoresSnapshot = await db.collection('scores').doc(quizId)
                     .collection('attempts')
                     .orderBy('score', 'desc')
@@ -258,28 +251,29 @@
                     scores.push({
                         ...data,
                         id: doc.id,
+                        quizId: data.quizId || quizId, // Use stored quizId or fallback
                         submittedAt: data.submittedAt?.toDate() || new Date()
                     });
                 });
                 
                 displayScores(scores);
                 refreshBtn.disabled = false;
-                refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh Scores';
+                refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh';
                 
             } catch (error) {
                 console.error('Error loading scores:', error);
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 30px 20px;">
-                        <div style="font-size: 48px; margin-bottom: 15px; color: var(--primary-color);">😕</div>
-                        <h3 style="margin-bottom: 12px;">Error Loading Scores</h3>
-                        <p style="color: #666; margin-bottom: 25px; font-size: 14px;">Please check your connection and try again</p>
-                        <button onclick="loadScores()" class="btn btn-small">
+                    <div style="text-align: center; padding: 24px 16px;">
+                        <div style="font-size: 40px; margin-bottom: 12px; color: var(--primary-color);">😕</div>
+                        <h3 style="margin-bottom: 10px; font-size: 16px;">Error Loading Scores</h3>
+                        <p style="color: #666; margin-bottom: 20px; font-size: 12px;">Please check your connection</p>
+                        <button onclick="loadScores()" class="btn btn-sm">
                             <i class='bx bx-refresh'></i> Try Again
                         </button>
                     </div>
                 `;
                 refreshBtn.disabled = false;
-                refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh Scores';
+                refreshBtn.innerHTML = '<i class="bx bx-refresh"></i> Refresh';
             }
         }
 
@@ -289,11 +283,11 @@
             
             if (scores.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 30px 20px;">
-                        <div style="font-size: 48px; margin-bottom: 15px; color: var(--primary-color);">📭</div>
-                        <h3 style="margin-bottom: 12px;">No Scores Yet</h3>
-                        <p style="color: #666; margin-bottom: 25px; font-size: 14px;">Be the first to take this Christmas quiz!</p>
-                        <a href="quiz.html?quiz=${quizId}" class="btn btn-small">
+                    <div style="text-align: center; padding: 24px 16px;">
+                        <div style="font-size: 40px; margin-bottom: 12px; color: var(--primary-color);">📭</div>
+                        <h3 style="margin-bottom: 10px; font-size: 16px;">No Scores Yet</h3>
+                        <p style="color: #666; margin-bottom: 20px; font-size: 12px;">Be the first to take this quiz!</p>
+                        <a href="quiz.html?quiz=${quizId}" class="btn btn-sm">
                             <i class='bx bx-play'></i> Take the Quiz
                         </a>
                     </div>
@@ -355,11 +349,11 @@
             
             if (history.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 30px 20px;">
-                        <div style="font-size: 48px; margin-bottom: 15px; color: var(--primary-color);">📝</div>
-                        <h3 style="margin-bottom: 12px;">No Quiz History</h3>
-                        <p style="color: #666; margin-bottom: 25px; font-size: 14px;">Create your first Christmas quiz to see it here!</p>
-                        <a href="create.html" class="btn btn-small">
+                    <div style="text-align: center; padding: 24px 16px;">
+                        <div style="font-size: 40px; margin-bottom: 12px; color: var(--primary-color);">📝</div>
+                        <h3 style="margin-bottom: 10px; font-size: 16px;">No Quiz History</h3>
+                        <p style="color: #666; margin-bottom: 20px; font-size: 12px;">Create your first quiz to see it here!</p>
+                        <a href="create.html" class="btn btn-sm">
                             <i class='bx bx-plus'></i> Create Quiz
                         </a>
                     </div>
@@ -370,7 +364,7 @@
             let html = '';
             history.forEach((quiz, index) => {
                 const date = new Date(quiz.date);
-                const emojis = ['🎄', '🎅', '🎁', '❄️', '✨'];
+                const emojis = ['👤', '🎯', '🏆', '⭐', '✨'];
                 const emoji = emojis[index % emojis.length];
                 
                 html += `
@@ -378,7 +372,7 @@
                         <div class="history-emoji">${emoji}</div>
                         <div class="history-info">
                             <div class="history-name">${quiz.name}'s Quiz</div>
-                            <div class="history-date">${date.toLocaleDateString()} at ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                            <div class="history-date">${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
                         </div>
                         <i class='bx bx-chevron-right' style="color: #ccc;"></i>
                     </div>
@@ -399,11 +393,11 @@
             }
             
             const quizLink = `${window.location.origin}/quiz.html?quiz=${quizId}`;
-            const message = `Can you beat my score on ${quizOwner}'s Christmas FRIENDS quiz? 🎄 ${quizLink} Challenge accepted? 🎅`;
+            const message = `Can you beat my score on ${quizOwner}'s FRIENDS quiz? 🏆 ${quizLink} Challenge accepted? 😎`;
             
             if (navigator.share) {
                 navigator.share({
-                    title: 'FRIENDS Christmas Quiz Challenge',
+                    title: 'FRIENDS Quiz Challenge',
                     text: message
                 });
             } else {
