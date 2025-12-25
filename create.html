@@ -3,83 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Your Quiz - FRIENDS</title>
+    <title>Create Quiz | FRIENDS</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://richinfo.co/richpartners/in-page/js/richads-ob.js?pubid=997197&siteid=381604" async></script>
+    <!-- Firebase v8 for compatibility -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
 </head>
 <body>
-    <div id="christmas-effects"></div>
-
     <div class="container">
-        <!-- Header -->
-        <header style="text-align: center; margin-bottom: 20px;">
-            <a href="index.html" style="text-decoration: none; color: inherit;">
-                <h1>🎅 FRIENDS 🎅</h1>
-            </a>
-            <p class="tagline">Create your personalized quiz</p>
-        </header>
-
-        <!-- Progress -->
-        <div class="card" style="margin-bottom: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h3>Step 1 of 2</h3>
-                    <p>Select 10 questions</p>
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <a href="index.html" style="text-decoration: none;">
+                    <div class="logo" style="font-size: 32px;">F•R•I•E•N•D•S</div>
+                </a>
+                <div id="selected-count" style="background: red; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600;">
+                    0/10
                 </div>
-                <div id="selected-count" style="background: var(--accent); color: var(--dark); padding: 10px 20px; border-radius: 20px; font-weight: bold;">
-                    0/10 selected
-                </div>
-            </div>
-            <div style="height: 10px; background: #E0E0E0; border-radius: 5px; margin-top: 10px;">
-                <div id="progress-bar" style="width: 0%; height: 100%; background: var(--primary); border-radius: 5px; transition: width 0.3s ease;"></div>
-            </div>
-        </div>
+            </header>
 
-        <!-- Nickname Input -->
+        <div class="line"></div>
+
+        <!-- Nickname Section -->
         <div class="card">
-            <div class="form-group">
-                <label for="nickname"><i class='bx bx-user'></i> Your Nickname</label>
-                <input type="text" id="nickname" class="form-control" placeholder="e.g., CaptainAwesome" maxlength="20">
-                <small style="color: #666; display: block; margin-top: 5px;">This is what will appear on the scoreboard</small>
+            <div class="input-group">
+                <label class="input-label"><i class='bx bx-user' style="color: red;"></i> Your Nickname</label>
+                <input type="text" id="nickname" class="input-field" placeholder="e.g., CaptainAwesome" maxlength="20">
+                <p style="color: #666; font-size: 14px; margin-top: 8px;">This name will appear on the scoreboard</p>
             </div>
         </div>
 
-        <!-- Questions Selection -->
-        <div class="card">
-            <h3 style="margin-bottom: 20px;">📝 Select 10 Questions</h3>
-            <p style="margin-bottom: 15px; color: #666;">Tap on questions to select them</p>
-            
-            <div id="questions-container">
-                <!-- Questions will be loaded here -->
-            </div>
-
-            <div style="text-align: center; margin-top: 20px;">
-                <button id="generate-btn" class="btn btn-primary" disabled>
-                    <i class='bx bx-check-circle'></i> Generate My Quiz (0/10)
-                </button>
-            </div>
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
         </div>
 
-        <!-- Ad Container -->
-        <div class="ad-container">
-            <p style="color: #666; font-style: italic;">Ad space</p>
+        <p id="selection-counter" class="selection-counter">Select 10 questions about yourself</p>
+
+        <!-- Questions List -->
+        <div id="questions-container">
+            <!-- Questions will be loaded here by JavaScript -->
         </div>
 
-        <!-- Footer -->
+        <button id="create-btn" class="btn" disabled>
+            <i class='bx bx-check-circle'></i> Create My Quiz
+        </button>
+
+        <div class="line"></div>
+
         <footer>
             <div class="footer-links">
-                <a href="index.html">Home</a>
+                <a href="index.html"><i class='bx bx-home'></i> Home</a>
                 <a href="privacy.html">Privacy</a>
                 <a href="terms.html">Terms</a>
             </div>
         </footer>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
-    <script src="js/firebase-config.js"></script>
-    <script src="js/create.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyALNlMLF-Fxu87Ge5yfhp2m1R-vU58XcLo",
+            authDomain: "besides-sm.firebaseapp.com",
+            projectId: "besides-sm",
+            storageBucket: "besides-sm.firebasestorage.app",
+            messagingSenderId: "897908486036",
+            appId: "1:897908486036:web:e39140f75bec1b4d4de981",
+            measurementId: "G-BB0NMVRFLY"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const analytics = firebase.analytics();
+
+        // Questions Database (20 questions)
+        const QUESTIONS = [
+            {
+                id: 1,
+                text: "What would I save first in a fire?",
+                options: ["Phone 📱", "Photo albums 📸", "Laptop 💻", "Favorite hoodie 👕", "Pet 🐾", "Myself! 🏃‍♂️"]
+            },
+            {
+                id: 2,
+                text: "What would I do on a perfect weekend?",
+                options: ["Netflix marathon 📺", "Outdoor adventure 🏕️", "Party with friends 🎉", "Sleep all day 😴", "Try new restaurants 🍽️", "Read books 📚"]
+            },
+            {
+                id: 3,
+                text: "What's my favorite color?",
+                options: ["Red ❤️", "Blue 💙", "Green 💚", "Black ⚫", "White ⚪", "Rainbow 🌈"]
+            },
+            {
+                id: 4,
+                text: "What's my hidden talent?",
+                options: ["Great cook 👨‍🍳", "Can sing well 🎵", "Speaks multiple languages 🗣️", "Really good at trivia 🧠", "Great dancer 💃", "I'm secretly average! 🤫"]
+            },
+            {
+                id: 5,
+                text: "What's my dream vacation destination?",
+                options: ["Bali 🌴", "Japan 🗾", "Italy 🏛️", "New Zealand 🏔️", "Maldives 🏝️", "Anywhere with a beach! 🌊"]
+            },
+            {
+                id: 6,
+                text: "What's my movie category?",
+                options: ["Action 💥", "Romance 💕", "Comedy 😂", "Horror 👻", "Sci-fi 🚀", "Animated 🎬"]
+            },
+            {
+                id: 7,
+                text: "What's my favorite type of food?",
+                options: ["Italian 🍝", "Mexican 🌮", "Chinese 🥡", "Indian 🍛", "Burgers 🍔", "Sushi 🍣"]
+            },
+            {
+                id: 8,
+                text: "What's my go-to karaoke song?",
+                options: ["Don't Stop Believin' 🎤", "Bohemian Rhapsody 🎸", "Wannabe 👯‍♀️", "Shape of You 🎶", "Sweet Caroline 👏", "I don't sing! 🙊"]
+            },
+            {
+                id: 9,
+                text: "What's my biggest pet peeve?",
+                options: ["Being late ⏰", "Loud chewing 🤢", "Bad texting etiquette 📱", "People who don't listen 👂", "Messy spaces 🗑️", "Rude people 😠"]
+            },
+            {
+                id: 10,
+                text: "What superpower would I choose?",
+                options: ["Invisibility 👻", "Flight 🦸‍♂️", "Time travel ⏳", "Teleportation ✨", "Mind reading 🧠", "Super strength 💪"]
+            },
+            {
+                id: 11,
+                text: "What's my coffee order?",
+                options: ["Black coffee ☕", "Latte with oat milk 🥛", "I don't drink coffee ❌", "Sweet frappuccino 🍦", "Espresso shot ⚡", "Tea instead! 🍵"]
+            },
+            {
+                id: 12,
+                text: "What emoji do I use the most?",
+                options: ["😂", "❤️", "🔥", "😭", "🤔", "✨"]
+            },
+            {
+                id: 13,
+                text: "How do I handle stress?",
+                options: ["Exercise 🏃‍♀️", "Eat junk food 🍕", "Talk to friends 🗣️", "Play video games 🎮", "Listen to music 🎧", "Sleep it off 😴"]
+            },
+            {
+                id: 14,
+                text: "What's my signature style?",
+                options: ["Comfortable 👟", "Trendy 👕", "Classic 👔", "Sporty 🏀", "Mix of everything 🎨", "Pajamas all day! 🛏️"]
+            },
+            {
+                id: 15,
+                text: "What reality show would I survive on?",
+                options: ["Survivor 🏝️", "The Amazing Race 🌍", "Big Brother 🏠", "Love Island ❤️", "Naked and Afraid 🥶", "I'd be voted off first! 🚪"]
+            },
+            {
+                id: 16,
+                text: "What's my guilty pleasure?",
+                options: ["Reality TV 📺", "Junk food 🍫", "Social media 📱", "Rom-coms 💕", "Shopping 🛍️", "All of the above! 🙈"]
+            },
+            {
+                id: 17,
+                text: "How do I celebrate Christmas?",
+                options: ["Big family dinner 👨‍👩‍👧‍👦", "Quiet at home 🏠", "Travel somewhere ✈️", "Lots of parties 🎉", "Volunteering ❤️", "All about the food! 🍪"]
+            },
+            {
+                id: 18,
+                text: "What makes me laugh the most?",
+                options: ["Dad jokes 😂", "Memes 📱", "Silly animal videos 🐶", "Friends' stories 👯", "Awkward situations 😅", "Everything! 🤣"]
+            },
+            {
+                id: 19,
+                text: "What's my favorite sport to watch?",
+                options: ["Soccer ⚽", "Basketball 🏀", "Tennis 🎾", "Esports 🎮", "None, I don't watch sports 🙅‍♂️", "All sports! 🏆"]
+            },
+            {
+                id: 20,
+                text: "What's my ideal Friday night?",
+                options: ["Movie night 🎬", "Club dancing 💃", "Dinner with friends 🍽️", "Video games 🎮", "Early sleep 😴", "Something spontaneous! 🎲"]
+            }
+        ];
+
+        let selectedQuestions = new Set();
+        let selectedAnswers = {};
+
+        // Load questions on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadQuestions();
+            
+            // Set up event listeners
+            document.getElementById('create-btn').addEventListener('click', createQuiz);
+            document.getElementById('nickname').addEventListener('input', validateForm);
+        });
+
+        function loadQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            
+            // Shuffle questions
+            const shuffledQuestions = [...QUESTIONS].sort(() => Math.random() - 0.5);
+            
+            shuffledQuestions.forEach(question => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.dataset.id = question.id;
+                
+                questionCard.innerHTML = `
+                    <div class="question-text">${question.text}</div>
+                    <div class="question-options">
+                        ${question.options.slice(0, 3).map(option => `
+                            <span class="option">${option}</span>
+                        `).join('')}
+                        ${question.options.length > 3 ? `<span class="option">+${question.options.length - 3} more</span>` : ''}
+                    </div>
+                `;
+                
+                questionCard.addEventListener('click', () => {
+                    toggleQuestionSelection(question.id, question.options[0]);
+                });
+                
+                container.appendChild(questionCard);
+            });
+        }
+
+        function toggleQuestionSelection(questionId, selectedOption) {
+            const questionCard = document.querySelector(`[data-id="${questionId}"]`);
+            
+            if (selectedQuestions.has(questionId)) {
+                // Deselect
+                selectedQuestions.delete(questionId);
+                delete selectedAnswers[questionId];
+                questionCard.classList.remove('selected');
+            } else {
+                // Select if we have less than 10
+                if (selectedQuestions.size < 10) {
+                    selectedQuestions.add(questionId);
+                    selectedAnswers[questionId] = selectedOption;
+                    questionCard.classList.add('selected');
+                    
+                    // Add subtle animation
+                    questionCard.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        questionCard.style.transform = 'scale(1)';
+                    }, 100);
+                } else {
+                    // Show notification
+                    showNotification('Maximum 10 questions allowed!');
+                    return;
+                }
+            }
+            
+            updateSelectionUI();
+            validateForm();
+        }
+
+        function updateSelectionUI() {
+            const count = selectedQuestions.size;
+            const countElement = document.getElementById('selected-count');
+            const progressBar = document.getElementById('progress-bar');
+            const counterText = document.getElementById('selection-counter');
+            
+            countElement.textContent = `${count}/10`;
+            progressBar.style.width = `${(count / 10) * 100}%`;
+            
+            if (count === 10) {
+                counterText.innerHTML = '<i class="bx bx-check" style="color: red;"></i> All 10 questions selected!';
+                countElement.style.background = '#25D366'; // Green when complete
+            } else {
+                counterText.textContent = `Select ${10 - count} more questions`;
+                countElement.style.background = 'red';
+            }
+        }
+
+        function validateForm() {
+            const nickname = document.getElementById('nickname').value.trim();
+            const createBtn = document.getElementById('create-btn');
+            
+            if (nickname.length >= 2 && selectedQuestions.size === 10) {
+                createBtn.disabled = false;
+                createBtn.innerHTML = '<i class="bx bx-check-circle"></i> Create My Quiz';
+            } else {
+                createBtn.disabled = true;
+                createBtn.innerHTML = '<i class="bx bx-check-circle"></i> Select 10 Questions';
+            }
+        }
+
+        async function createQuiz() {
+            const nickname = document.getElementById('nickname').value.trim();
+            
+            if (!nickname || selectedQuestions.size !== 10) {
+                showNotification('Please complete all requirements!');
+                return;
+            }
+            
+            // Show loading
+            const btn = document.getElementById('create-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Creating...';
+            btn.disabled = true;
+            
+            try {
+                // Prepare quiz data
+                const quizData = {
+                    ownerName: nickname,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    questions: Array.from(selectedQuestions).map(id => {
+                        const question = QUESTIONS.find(q => q.id === id);
+                        return {
+                            id: question.id,
+                            text: question.text,
+                            options: question.options,
+                            correctAnswer: selectedAnswers[question.id]
+                        };
+                    })
+                };
+                
+                // Save to Firestore
+                const quizRef = await db.collection('quizzes').add(quizData);
+                const quizId = quizRef.id;
+                
+                // Track analytics
+                analytics.logEvent('quiz_created');
+                
+                // Redirect to share page
+                window.location.href = `share.html?quiz=${quizId}`;
+                
+            } catch (error) {
+                console.error('Error creating quiz:', error);
+                showNotification('Error creating quiz. Please try again!');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function showNotification(message) {
+            // Remove existing notification
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
