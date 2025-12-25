@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoreboard - FRIENDS</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="christmas-effects"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header style="text-align: center; margin-bottom: 20px;">
+            <a href="index.html" style="text-decoration: none; color: inherit;">
+                <h1>🏆 FRIENDS 🏆</h1>
+            </a>
+            <p class="tagline" id="scoreboard-title">Live Scoreboard</p>
+        </header>
+
+        <!-- Stats Card -->
+        <div class="card">
+            <div id="quiz-stats" style="text-align: center;">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading statistics...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scoreboard -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3><i class='bx bx-trophy'></i> Live Ranking</h3>
+                <span id="total-players" style="background: var(--light); padding: 5px 15px; border-radius: 20px;">
+                    0 players
+                </span>
+            </div>
+            
+            <div id="scores-container">
+                <!-- Scores will be loaded here -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="refresh-btn" class="btn btn-outline" style="margin-right: 10px;">
+                    <i class='bx bx-refresh'></i> Refresh
+                </button>
+                <button id="share-quiz-btn" class="btn btn-primary">
+                    <i class='bx bx-share-alt'></i> Challenge More Friends
+                </button>
+            </div>
+        </div>
+
+        <!-- Ad Container -->
+        <div class="ad-container">
+            <p style="color: #666; font-style: italic;">Ad space - Clean ads only</p>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/scoreboard.js"></script>
+</body>
+</html>
