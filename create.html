@@ -17,16 +17,16 @@
         <header>
             <a href="index.html" style="text-decoration: none;">
                 <div class="logo">
-                    <span style="color: #FF6B6B;">F</span><span class="logo-dot" style="color: #FF9800;">•</span>
-                    <span style="color: #4CAF50;">R</span><span class="logo-dot" style="color: #9C27B0;">•</span>
-                    <span style="color: #2196F3;">I</span><span class="logo-dot" style="color: #FF5722;">•</span>
+                    <span style="color: #FF4444;">F</span><span class="logo-dot" style="color: #FF9800;">•</span>
+                    <span style="color: #2ECC71;">R</span><span class="logo-dot" style="color: #9C27B0;">•</span>
+                    <span style="color: #4A90E2;">I</span><span class="logo-dot" style="color: #FF5722;">•</span>
                     <span style="color: #FFC107;">E</span><span class="logo-dot" style="color: #795548;">•</span>
                     <span style="color: #673AB7;">N</span><span class="logo-dot" style="color: #00BCD4;">•</span>
                     <span style="color: #E91E63;">D</span><span class="logo-dot" style="color: #8BC34A;">•</span>
                     <span style="color: #3F51B5;">S</span>
                 </div>
             </a>
-            <div id="selected-count" style="background: var(--primary-color); color: white; padding: 6px 12px; border-radius: 15px; font-weight: 600; font-size: 13px; display: inline-block; margin-top: 8px;">
+            <div id="selected-count" style="background: var(--primary-color); color: white; padding: 5px 10px; border-radius: 12px; font-weight: 600; font-size: 12px; display: inline-block; margin-top: 6px;">
                 0/10
             </div>
         </header>
@@ -37,8 +37,8 @@
         <div class="card">
             <div class="input-group">
                 <label class="input-label"><i class='bx bx-user' style="color: var(--primary-color);"></i> Your Nickname</label>
-                <input type="text" id="nickname" class="input-field" placeholder="e.g., SantaHelper" maxlength="20">
-                <p style="color: #666; font-size: 12px; margin-top: 6px;">This name will appear on the scoreboard</p>
+                <input type="text" id="nickname" class="input-field" placeholder="e.g., SuperFriend" maxlength="20">
+                <p style="color: #666; font-size: 11px; margin-top: 5px;">This name will appear on the scoreboard</p>
             </div>
         </div>
 
@@ -46,7 +46,7 @@
             <div id="progress-bar" class="progress-bar"></div>
         </div>
 
-        <p id="selection-counter" class="selection-counter">🎄 Select 10 Christmas questions about yourself 🎅</p>
+        <p id="selection-counter" class="selection-counter">Select 10 questions about yourself</p>
 
         <!-- Questions List -->
         <div id="questions-container">
@@ -84,107 +84,107 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Questions Database (20 Christmas-themed questions)
+        // Questions Database (20 regular questions)
         const QUESTIONS = [
             {
                 id: 1,
-                text: "What would I save first in a Christmas fire? 🎄🔥",
-                options: ["Christmas gifts 🎁", "Phone with family photos 📱", "Favorite Christmas sweater 👕", "Pet under the tree 🐾"]
+                text: "What would I save first in a fire?",
+                options: ["Phone 📱", "Photo albums 📸", "Laptop 💻", "Favorite hoodie 👕"]
             },
             {
                 id: 2,
-                text: "What would I do on a perfect Christmas weekend? 🎅",
-                options: ["Watch Christmas movies all day 🎬", "Build a snowman outside ⛄", "Christmas party with friends 🎉", "Sleep after big dinner 😴"]
+                text: "What would I do on a perfect weekend?",
+                options: ["Netflix marathon 📺", "Outdoor adventure 🏕️", "Party with friends 🎉", "Sleep all day 😴"]
             },
             {
                 id: 3,
-                text: "What's my favorite Christmas color? 🎨",
-                options: ["Christmas Red ❤️", "Snow White ⛄", "Christmas Green 🎄", "Gold Star ⭐"]
+                text: "What's my favorite color?",
+                options: ["Red ❤️", "Blue 💙", "Green 💚", "Black ⚫"]
             },
             {
                 id: 4,
-                text: "What's my hidden Christmas talent? 🎁",
-                options: ["Best gift wrapper 🎀", "Christmas carol singer 🎵", "Cookie baker 🍪", "Christmas tree decorator 🎄"]
+                text: "What's my hidden talent?",
+                options: ["Great cook 👨‍🍳", "Can sing well 🎵", "Good at sports 🏀", "Funny storyteller 😂"]
             },
             {
                 id: 5,
-                text: "Where's my dream Christmas vacation? ✈️",
-                options: ["Lapland to meet Santa 🎅", "Christmas in New York 🗽", "Beach Christmas 🌴", "Christmas market in Europe 🏰"]
+                text: "What's my dream vacation destination?",
+                options: ["Bali 🌴", "Japan 🗾", "Italy 🏛️", "New York 🗽"]
             },
             {
                 id: 6,
-                text: "What's my favorite Christmas movie? 🎬",
-                options: ["Home Alone 😂", "The Grinch 👺", "Elf 🧝", "Love Actually ❤️"]
+                text: "What's my favorite movie genre?",
+                options: ["Action 💥", "Comedy 😂", "Romance 💕", "Sci-fi 🚀"]
             },
             {
                 id: 7,
-                text: "What's my favorite Christmas food? 🍽️",
-                options: ["Christmas cookies 🍪", "Turkey dinner 🦃", "Christmas ham 🍖", "Hot chocolate ☕"]
+                text: "What's my favorite type of food?",
+                options: ["Italian 🍝", "Mexican 🌮", "Chinese 🥡", "Burgers 🍔"]
             },
             {
                 id: 8,
-                text: "What's my go-to Christmas song? 🎵",
-                options: ["Last Christmas 🎤", "All I Want for Christmas ❤️", "Jingle Bell Rock 🔔", "Silent Night 🌃"]
+                text: "What's my go-to karaoke song?",
+                options: ["Don't Stop Believin' 🎤", "Bohemian Rhapsody 🎸", "Wannabe 👯‍♀️", "I don't sing! 🙊"]
             },
             {
                 id: 9,
-                text: "What's my Christmas pet peeve? 😠",
-                options: ["Early Christmas music 🎵", "Bad gift wrappers 🎁", "Fake snow ❄️", "Overcooked turkey 🦃"]
+                text: "What's my biggest pet peeve?",
+                options: ["Being late ⏰", "Loud chewing 🤢", "Bad texting 📱", "Messy spaces 🗑️"]
             },
             {
                 id: 10,
-                text: "What Christmas superpower would I choose? 🦸‍♂️",
-                options: ["Deliver all gifts instantly 🎁", "Make snow anywhere ❄️", "Perfect gift ideas 💡", "Endless Christmas cookies 🍪"]
+                text: "What superpower would I choose?",
+                options: ["Invisibility 👻", "Flight 🦸‍♂️", "Time travel ⏳", "Mind reading 🧠"]
             },
             {
                 id: 11,
-                text: "What's my Christmas morning drink? ☕",
-                options: ["Hot chocolate with marshmallows ☕", "Christmas coffee ☕", "Orange juice 🍊", "Eggnog 🥛"]
+                text: "What's my coffee order?",
+                options: ["Black coffee ☕", "Latte 🥛", "No coffee ❌", "Sweet drink 🍦"]
             },
             {
                 id: 12,
-                text: "What's my most used Christmas emoji? ✨",
-                options: ["🎄", "🎅", "🎁", "❄️"]
+                text: "What emoji do I use the most?",
+                options: ["😂", "❤️", "🔥", "🤔"]
             },
             {
                 id: 13,
-                text: "How do I handle Christmas stress? 🎄",
-                options: ["Eat more cookies 🍪", "Watch Christmas movies 🎬", "Go shopping 🛍️", "Take a nap 😴"]
+                text: "How do I handle stress?",
+                options: ["Exercise 🏃‍♀️", "Eat food 🍕", "Talk to friends 🗣️", "Listen to music 🎧"]
             },
             {
                 id: 14,
-                text: "What's my Christmas style? 👕",
-                options: ["Ugly Christmas sweater 🎄", "Cozy pajamas 🛏️", "Festive dress 👗", "Santa costume 🎅"]
+                text: "What's my signature style?",
+                options: ["Comfortable 👟", "Trendy 👕", "Classic 👔", "Sporty 🏀"]
             },
             {
                 id: 15,
-                text: "Which Christmas show would I survive on? 📺",
-                options: ["Baking competition 🍪", "Christmas decorating 🎄", "Gift wrapping 🎁", "Carol singing 🎵"]
+                text: "What reality show would I survive on?",
+                options: ["Survivor 🏝️", "Big Brother 🏠", "Love Island ❤️", "I'd fail! 🚪"]
             },
             {
                 id: 16,
-                text: "What's my Christmas guilty pleasure? 🎁",
-                options: ["Eating cookies for breakfast 🍪", "Opening gifts early 🎁", "Watching same movies yearly 🎬", "All the food! 🍽️"]
+                text: "What's my guilty pleasure?",
+                options: ["Reality TV 📺", "Junk food 🍫", "Social media 📱", "Rom-coms 💕"]
             },
             {
                 id: 17,
-                text: "How do I celebrate Christmas Eve? 🌃",
-                options: ["Family dinner 👨‍👩‍👧‍👦", "Church service ⛪", "Presents under tree 🎁", "Christmas movie marathon 🎬"]
+                text: "How do I celebrate birthdays?",
+                options: ["Big party 🎉", "Quiet dinner 🍽️", "Travel ✈️", "Ignore it 🙅‍♂️"]
             },
             {
                 id: 18,
-                text: "What makes me laugh most at Christmas? 😂",
-                options: ["Family stories 👨‍👩‍👧‍👦", "Funny gifts 🎁", "Christmas fails 😅", "Santa jokes 🎅"]
+                text: "What makes me laugh the most?",
+                options: ["Dad jokes 😂", "Memes 📱", "Friends' stories 👯", "Comedy shows 📺"]
             },
             {
                 id: 19,
-                text: "What's my favorite Christmas sport? 🏀",
-                options: ["Ice skating ⛸️", "Snowball fight ❄️", "Skiing 🎿", "Watching by the fire 🔥"]
+                text: "What's my favorite sport to watch?",
+                options: ["Soccer ⚽", "Basketball 🏀", "Tennis 🎾", "No sports 🙅‍♂️"]
             },
             {
                 id: 20,
-                text: "What's my ideal Christmas night? 🌙",
-                options: ["By the fireplace 🔥", "Christmas lights drive 🚗", "Board games 🎲", "Early sleep 😴"]
+                text: "What's my ideal Friday night?",
+                options: ["Movie night 🎬", "Club 💃", "Dinner out 🍽️", "Video games 🎮"]
             }
         ];
 
@@ -193,26 +193,34 @@
 
         // Load questions on page load
         document.addEventListener('DOMContentLoaded', function() {
+            applyTheme();
+            loadSavedNickname();
             loadQuestions();
             
             // Set up event listeners
             document.getElementById('create-btn').addEventListener('click', createQuiz);
-            document.getElementById('nickname').addEventListener('input', validateForm);
-            
-            // Apply theme
-            applyTheme();
+            document.getElementById('nickname').addEventListener('input', function() {
+                validateForm();
+                // Save nickname as user types
+                if (this.value.trim().length >= 2) {
+                    localStorage.setItem('friends_nickname', this.value.trim());
+                }
+            });
         });
 
         function applyTheme() {
             const themes = ['red', 'blue', 'green', 'orange', 'violet'];
-            const currentDate = new Date();
-            const month = currentDate.getMonth() + 1;
-            
-            if (month === 12) {
-                document.body.classList.add('theme-christmas');
-            } else {
-                const randomTheme = themes[Math.floor(Math.random() * themes.length)];
-                document.body.classList.add('theme-' + randomTheme);
+            const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+            document.body.classList.add('theme-' + randomTheme);
+        }
+
+        function loadSavedNickname() {
+            const savedNickname = localStorage.getItem('friends_nickname');
+            if (savedNickname) {
+                const nicknameInput = document.getElementById('nickname');
+                nicknameInput.value = savedNickname;
+                // Trigger validation
+                setTimeout(() => validateForm(), 100);
             }
         }
 
@@ -235,7 +243,7 @@
                             <span>${option}</span>
                         `).join('')}
                     </div>
-                    <div style="color: var(--primary-color); font-size: 12px; margin-top: 8px; display: none;" class="selected-answer">
+                    <div style="color: var(--primary-color); font-size: 11px; margin-top: 6px; display: none;" class="selected-answer">
                         <i class='bx bx-check'></i> Selected: <span class="selected-text"></span>
                     </div>
                 `;
@@ -254,28 +262,16 @@
             
             // Create answer selection modal
             const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0,0,0,0.5);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 1000;
-                padding: 20px;
-            `;
+            modal.className = 'modal-overlay';
             
             modal.innerHTML = `
-                <div style="background: white; border-radius: 12px; padding: 20px; max-width: 400px; width: 100%; max-height: 80vh; overflow-y: auto;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="font-size: 16px; color: var(--primary-color);">Select Answer</h3>
-                        <button id="close-modal" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #666;">×</button>
+                <div class="modal-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h3 style="font-size: 15px; color: var(--primary-color);">Select Answer</h3>
+                        <button id="close-modal" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #666;">×</button>
                     </div>
                     
-                    <div class="question-text" style="margin-bottom: 20px; font-size: 15px;">${question.text}</div>
+                    <div class="question-text" style="margin-bottom: 16px; font-size: 14px;">${question.text}</div>
                     
                     <div class="answer-options">
                         ${question.options.map((option, index) => `
@@ -286,7 +282,7 @@
                         `).join('')}
                     </div>
                     
-                    <button id="save-answer" class="btn" style="margin-top: 20px;">
+                    <button id="save-answer" class="btn" style="margin-top: 16px;">
                         <i class='bx bx-save'></i> Save Answer
                     </button>
                 </div>
@@ -369,7 +365,7 @@
             
             if (count === 10) {
                 counterText.innerHTML = '<i class="bx bx-check" style="color: var(--primary-color);"></i> All 10 questions selected!';
-                countElement.style.background = '#25D366';
+                countElement.style.background = '#28a745';
             } else {
                 counterText.textContent = `Select ${10 - count} more questions`;
                 countElement.style.background = 'var(--primary-color)';
